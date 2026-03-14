@@ -1,0 +1,402 @@
+/* ============================================
+   ICSS CRM — Dashboard Page
+   ============================================ */
+
+/* ---------- Metric Cards Grid ---------- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.metric-card {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    padding: var(--space-lg);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.metric-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.metric-card:hover::before {
+    opacity: 1;
+}
+
+/* Card accent colors */
+.metric-card.accent-primary::before {
+    background: var(--clr-primary);
+}
+
+.metric-card.accent-info::before {
+    background: var(--clr-info);
+}
+
+.metric-card.accent-warning::before {
+    background: var(--clr-warning);
+}
+
+.metric-card.accent-danger::before {
+    background: var(--clr-danger);
+}
+
+.metric-card.accent-success::before {
+    background: var(--clr-success);
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.metric-icon.icon-primary {
+    background: var(--clr-primary-light);
+    color: var(--clr-primary);
+}
+
+.metric-icon.icon-info {
+    background: var(--clr-info-bg);
+    color: var(--clr-info);
+}
+
+.metric-icon.icon-warning {
+    background: var(--clr-warning-bg);
+    color: var(--clr-warning);
+}
+
+.metric-icon.icon-danger {
+    background: var(--clr-danger-bg);
+    color: var(--clr-danger);
+}
+
+.metric-icon.icon-success {
+    background: var(--clr-success-bg);
+    color: var(--clr-success);
+}
+
+.metric-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.metric-label {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 8px;
+}
+
+.metric-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.metric-trend.up {
+    background: var(--clr-success-bg);
+    color: #16a34a;
+}
+
+.metric-trend.down {
+    background: var(--clr-danger-bg);
+    color: #dc2626;
+}
+
+.metric-trend.neutral {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* ---------- Dashboard Tables Grid ---------- */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+}
+
+.table-card {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.table-card .card-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--clr-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table-card .card-header h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.table-card .card-header .header-icon {
+    color: var(--clr-primary);
+}
+
+.view-all-link {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--transition-fast);
+}
+
+.view-all-link:hover {
+    gap: 8px;
+}
+
+/* ---------- Quick Stats Row ---------- */
+.quick-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    margin-bottom: var(--space-lg);
+}
+
+.quick-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.8125rem;
+}
+
+.quick-stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.quick-stat-value {
+    font-weight: 700;
+    color: var(--clr-text);
+}
+
+.quick-stat-label {
+    color: var(--clr-text-muted);
+}
+
+/* ---------- Status in table ---------- */
+.status-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dot.green {
+    background: var(--clr-success);
+}
+
+.status-dot.yellow {
+    background: var(--clr-warning);
+}
+
+.status-dot.red {
+    background: var(--clr-danger);
+}
+
+.status-dot.blue {
+    background: var(--clr-info);
+}
+
+.status-dot.gray {
+    background: var(--clr-text-muted);
+}
+
+/* ---------- User avatar in table ---------- */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-cell-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--clr-primary-light);
+    color: var(--clr-primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ---------- Welcome Banner ---------- */
+.welcome-banner {
+    background: var(--clr-primary-gradient);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl) var(--space-2xl);
+    color: #fff;
+    margin-bottom: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 220px;
+    height: 220px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: 60px;
+    bottom: -80px;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.welcome-banner h2 {
+    color: #fff;
+    font-size: 1.375rem;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-banner p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.875rem;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-date {
+    position: absolute;
+    right: var(--space-2xl);
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+    z-index: 1;
+}
+
+.welcome-date .date-day {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.welcome-date .date-month {
+    font-size: 0.875rem;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .tables-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+    }
+
+    .metric-card {
+        padding: var(--space-md);
+    }
+
+    .metric-value {
+        font-size: 1.375rem;
+    }
+
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .welcome-banner {
+        padding: var(--space-lg);
+    }
+
+    .welcome-date {
+        display: none;
+    }
+
+    .quick-stats {
+        flex-wrap: wrap;
+        gap: var(--space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
