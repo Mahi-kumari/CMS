@@ -1,229 +1,227 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Trebuchet MS", Arial, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Trebuchet MS", Arial, sans-serif;
 }
 
-body{
-background:#eef1f1;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-padding:20px;
+body {
+  background: #eef1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
 }
 
 /* MAIN CARD */
 
-.auth-shell{
-width:820px;
-height:460px;
-max-width:95vw;
-display:grid;
-grid-template-columns:360px 1fr;
-background:#fff;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 12px 30px rgba(0,0,0,0.12);
+.auth-shell {
+  width: 820px;
+  height: 460px;
+  max-width: 95vw;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* LEFT PANEL */
 
-.brand-panel{
-background:linear-gradient(160deg,#2aa88f,#157a67);
-color:#fff;
-padding:28px 26px;
-display:flex;
-align-items:center;
-padding-top:20px;
-padding-bottom:38px;
-position:relative;
-overflow:visible;
-height:100%;
+.brand-panel {
+  background: linear-gradient(160deg, #2aa88f, #157a67);
+  color: #fff;
+  padding: 28px 26px;
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 38px;
+  position: relative;
+  overflow: visible;
+  height: 100%;
 }
 
 /* SOFT BACKGROUND CIRCLE */
 
-.brand-panel::after{
-content:"";
-position:absolute;
-left:-120px;
-top:-120px;
-width:420px;
-height:420px;
-background:rgba(255,255,255,0.08);
-border-radius:50%;
+.brand-panel::after {
+  content: "";
+  position: absolute;
+  left: -120px;
+  top: -120px;
+  width: 420px;
+  height: 420px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
 }
 
 /* GREEN CURVE BULGE INTO WHITE PANEL */
-.brand-panel::before{
-content:"";
-position:absolute;
-right:-220px;
-top:-260px;
-width:520px;
-height:520px;
-background:linear-gradient(160deg,#2aa88f,#157a67);
-border-radius:50%;
-z-index:1;
+.brand-panel::before {
+  content: "";
+  position: absolute;
+  right: -220px;
+  top: -260px;
+  width: 520px;
+  height: 520px;
+  background: linear-gradient(160deg, #2aa88f, #157a67);
+  border-radius: 50%;
+  z-index: 1;
 }
 
 /* TEXT */
 
-.brand-content{
-position:relative;
-z-index:2;
-max-width:240px;
+.brand-content {
+  position: relative;
+  z-index: 2;
+  max-width: 240px;
 }
 
-.brand-mark{
-font-size:26px;
-font-weight:700;
-letter-spacing:3px;
-margin-bottom:10px;
+.brand-mark {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
 }
 
-.brand-subtitle{
-font-size:12px;
-text-transform:uppercase;
-letter-spacing:1px;
-margin-bottom:16px;
-opacity:0.9;
+.brand-subtitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  opacity: 0.9;
 }
 
-.brand-copy{
-font-size:13px;
-line-height:1.6;
-opacity:0.9;
-margin-bottom:18px;
+.brand-copy {
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 18px;
 }
 
-.brand-login{
-padding:8px 22px;
-border:none;
-border-radius:20px;
-background:#fff;
-color:#157a67;
-font-weight:600;
-cursor:pointer;
-text-decoration:none;
-display:inline-block;
+.brand-login {
+  padding: 8px 22px;
+  border: none;
+  border-radius: 20px;
+  background: #fff;
+  color: #157a67;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .brand-login:link,
 .brand-login:visited,
 .brand-login:hover,
-.brand-login:active{
-text-decoration:none;
-color:#157a67;
+.brand-login:active {
+  text-decoration: none;
+  color: #157a67;
 }
 
-.brand-note{
-margin-top:10px;
-font-size:12px;
-opacity:0.9;
+.brand-note {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.9;
 }
 
 /* RIGHT PANEL */
 
-.form-panel{
-padding:28px 42px;
-display:flex;
-flex-direction:column;
-height:100%;
-position:relative;
-z-index:2;
-background:#fff;
+.form-panel {
+  padding: 28px 42px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  background: #fff;
 }
 
-.form-panel h2{
-font-size:22px;
-margin-bottom:6px;
-color:#1c2b2a;
+.form-panel h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #1c2b2a;
 }
 
-.form-note{
-font-size:12px;
-color:#7a8c8a;
-margin-bottom:12px;
+.form-note {
+  font-size: 12px;
+  color: #7a8c8a;
+  margin-bottom: 12px;
 }
 
 /* FORM */
 
-.register-form{
-display:flex;
-flex-direction:column;
-gap:10px;
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.field{
-display:flex;
-flex-direction:column;
-gap:6px;
-font-size:12px;
-color:#4d5d5b;
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #4d5d5b;
 }
 
-.field input{
-padding:9px 12px;
-border:1px solid #d7e3e1;
-border-radius:8px;
-font-size:13px;
-outline:none;
+.field input {
+  padding: 9px 12px;
+  border: 1px solid #d7e3e1;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
 }
 
-.field input:focus{
-border-color:#1aa88b;
+.field input:focus {
+  border-color: #1aa88b;
 }
 
 /* BUTTONS */
 
-.primary-btn{
-margin-top:6px;
-padding:8px 20px;
-border:none;
-border-radius:25px;
-background:#1aa88b;
-color:#fff;
-font-weight:600;
-cursor:pointer;
-width:130px;
+.primary-btn {
+  margin-top: 6px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 25px;
+  background: #1aa88b;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  width: 130px;
 }
 
-.primary-btn:hover{
-background:#0f8b72;
+.primary-btn:hover {
+  background: #0f8b72;
 }
 
-.ghost-btn{
-margin-top:10px;
-padding:8px;
-border:1px solid #1aa88b;
-border-radius:25px;
-background:transparent;
-color:#1aa88b;
-cursor:pointer;
+.ghost-btn {
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid #1aa88b;
+  border-radius: 25px;
+  background: transparent;
+  color: #1aa88b;
+  cursor: pointer;
 }
 
 /* MOBILE */
 
-@media (max-width:760px){
+@media (max-width: 760px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 
-.auth-shell{
-grid-template-columns:1fr;
-height:auto;
-}
+  .wave-divider {
+    display: none;
+  }
 
-.wave-divider{
-display:none;
-}
+  .brand-panel {
+    min-height: 200px;
+  }
 
-.brand-panel{
-min-height:200px;
-}
-
-.form-panel{
-padding:30px;
-}
-
+  .form-panel {
+    padding: 30px;
+  }
 }
