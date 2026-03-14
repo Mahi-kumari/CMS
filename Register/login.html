@@ -1,55 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRM Login</title>
-<link rel="stylesheet" href="login.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRM Login</title>
+    <link rel="stylesheet" href="login.css" />
+  </head>
 
-<body>
+  <body>
+    <div class="auth-shell">
+      <!-- LEFT PANEL -->
+      <section class="brand-panel">
+        <div class="brand-content">
+          <div class="brand-mark">C.R.M</div>
+          <div class="brand-subtitle">Customer Relationship Management</div>
+          <p class="brand-copy">
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry.
+          </p>
+          <a class="brand-login" href="register.html">Register</a>
+          <div class="brand-note">New here?</div>
+        </div>
+      </section>
 
-<div class="auth-shell">
+      <!-- RIGHT PANEL -->
+      <section class="form-panel">
+        <h2>Sign In to C.R.M</h2>
+        <p class="form-note">Enter your email and password.</p>
 
-  <!-- LEFT PANEL -->
-  <section class="brand-panel">
-    <div class="brand-content">
-      <div class="brand-mark">C.R.M</div>
-      <div class="brand-subtitle">Customer Relationship Management</div>
-      <p class="brand-copy">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      </p>
-      <a class="brand-login" href="register.html">Register</a>
-      <div class="brand-note">New here?</div>
+        <form class="register-form">
+          <label class="field">
+            <span>Email</span>
+            <input type="email" placeholder="Enter your email" />
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input type="password" placeholder="Enter your password" />
+          </label>
+
+          <a href="#" class="forgot-link" id="openForgot">Forgot password?</a>
+
+          <button class="primary-btn">Login</button>
+        </form>
+      </section>
     </div>
-  </section>
 
-  <!-- RIGHT PANEL -->
-  <section class="form-panel">
-
-    <h2>Sign In to C.R.M</h2>
-    <p class="form-note">Enter your email and password.</p>
-
-    <form class="register-form">
-
-      <label class="field">
-        <span>Email</span>
-        <input type="email" placeholder="Enter your email">
-      </label>
-
-      <label class="field">
-        <span>Password</span>
-        <input type="password" placeholder="Enter your password">
-      </label>
-
-      <button class="primary-btn">Login</button>
-    
-
-    </form>
-
-  </section>
-
-</div>
-
-</body>
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotModal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeForgot">&times;</span>
+        <h3>Reset Password</h3>
+        <p class="form-note">
+          Enter your email address and we'll send you a link to reset your
+          password.
+        </p>
+        <form class="register-form">
+          <label class="field">
+            <span>Email Address</span>
+            <input type="email" placeholder="name@company.com" required />
+          </label>
+          <button
+            type="submit"
+            class="primary-btn"
+            style="width: 100%; margin-top: 15px"
+          >
+            Send Reset Link
+          </button>
+        </form>
+      </div>
+    </div>
+    <script src="login.js"></script>
+  </body>
 </html>

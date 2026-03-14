@@ -1,7 +1,7 @@
-document.getElementById("registerForm").addEventListener("submit",function(e){
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", function (e) {
+    e.preventDefault();
 
-e.preventDefault();
-
-alert("Registration Successful!");
-
-});
+    alert("Registration Successful!");
+  });
