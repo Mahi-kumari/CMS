@@ -1,0 +1,293 @@
+/* ============================================
+   ICSS CRM — View Leads Page
+   ============================================ */
+
+/* ---------- Toolbar ---------- */
+.leads-toolbar {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+    min-width: 0;
+}
+
+.toolbar-search {
+    position: relative;
+    flex: 1;
+    max-width: 340px;
+}
+
+.toolbar-search .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+}
+
+.toolbar-search input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    font-size: 0.8125rem;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    background: var(--clr-bg);
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.toolbar-search input:focus {
+    border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px rgba(26, 168, 139, 0.1);
+    background: var(--clr-surface);
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* ---------- Filter Pills ---------- */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.filter-select {
+    padding: 8px 28px 8px 12px;
+    font-size: 0.8125rem;
+    color: var(--clr-text-secondary);
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus {
+    border-color: var(--clr-primary);
+}
+
+.active-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    padding: 0 var(--space-lg) var(--space-md);
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--clr-primary-light);
+    color: var(--clr-primary-dark);
+    border-radius: var(--radius-full);
+}
+
+.filter-tag-remove {
+    cursor: pointer;
+    font-size: 0.875rem;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+}
+
+.filter-tag-remove:hover {
+    opacity: 1;
+}
+
+/* ---------- Table Container ---------- */
+.leads-table-container {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.leads-table-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--clr-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.leads-count {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+}
+
+.leads-count strong {
+    color: var(--clr-text);
+    font-weight: 700;
+}
+
+/* ---------- Table Actions ---------- */
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.row-action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.row-action-btn:hover {
+    background: var(--clr-surface-alt);
+    color: var(--clr-primary);
+}
+
+.row-action-btn.view:hover {
+    color: var(--clr-info);
+    background: var(--clr-info-bg);
+}
+
+.row-action-btn.edit:hover {
+    color: var(--clr-warning);
+    background: var(--clr-warning-bg);
+}
+
+.row-action-btn.delete:hover {
+    color: var(--clr-danger);
+    background: var(--clr-danger-bg);
+}
+
+/* ---------- Table Footer ---------- */
+.table-footer {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--clr-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table-footer-info {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+}
+
+/* ---------- Empty State ---------- */
+.empty-state {
+    padding: var(--space-2xl);
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-md);
+    background: var(--clr-surface-alt);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--clr-text-muted);
+}
+
+.empty-state h4 {
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.empty-state p {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+    margin-bottom: var(--space-md);
+}
+
+/* ---------- Lead Detail Modal ---------- */
+.lead-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 0.875rem;
+    color: var(--clr-text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .leads-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        max-width: none;
+    }
+
+    .toolbar-search {
+        max-width: none;
+    }
+
+    .toolbar-right {
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        flex-wrap: wrap;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        gap: var(--space-md);
+        align-items: center;
+    }
+
+    .lead-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

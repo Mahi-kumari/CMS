@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ICSS CRM — Create a new lead with student, course, and admission details." />
+    <title>Create Lead | ICSS CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/create-lead.css" />
+</head>
+
+<body>
+    <!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <button class="navbar-hamburger show-mobile" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+            <div class="navbar-logo">IC</div>
+            <div class="navbar-brand-text hide-mobile">
+                <span class="navbar-brand-name">ICSS CRM</span>
+                <span class="navbar-brand-sub">Management Suite</span>
+            </div>
+        </div>
+        <div class="navbar-center hide-mobile">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="globalSearch" placeholder="Search leads, contacts, courses…"
+                    autocomplete="off" />
+                <span class="search-shortcut">Ctrl+K</span>
+            </div>
+        </div>
+        <div class="navbar-actions">
+            <button class="navbar-action-btn" data-tooltip="Notifications" id="notificationBtn">🔔<span
+                    class="notification-dot"></span></button>
+            <button class="navbar-action-btn hide-mobile" data-tooltip="Help">❓</button>
+            <div class="profile-wrapper">
+                <div class="profile-trigger">
+                    <div class="profile-avatar">AD</div>
+                    <div class="profile-info hide-mobile">
+                        <span class="profile-name">Admin User</span>
+                        <span class="profile-role">Administrator</span>
+                    </div>
+                    <span class="profile-chevron hide-mobile">▾</span>
+                </div>
+                <div class="profile-dropdown">
+                    <div class="dropdown-header">
+                        <div class="profile-name">Admin User</div>
+                        <div class="profile-email">admin@icsscrm.com</div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">👤</span> My
+                            Profile</a>
+                        <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">⚙️</span> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item danger" href="../Register/login.html"><span
+                                class="dropdown-icon">🚪</span> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-shell">
+        <!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">Main</div>
+                    <a href="index.html" class="sidebar-link" data-tooltip="Dashboard"><span
+                            class="sidebar-icon">📊</span><span class="sidebar-link-text">Dashboard</span></a>
+                    <a href="create-lead.html" class="sidebar-link active" data-tooltip="Create Lead"><span
+                            class="sidebar-icon">➕</span><span class="sidebar-link-text">Create Lead</span></a>
+                    <a href="view-leads.html" class="sidebar-link" data-tooltip="View Leads"><span
+                            class="sidebar-icon">📋</span><span class="sidebar-link-text">View Leads</span><span
+                            class="sidebar-badge">15</span></a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">System</div>
+                    <a href="settings.html" class="sidebar-link" data-tooltip="Settings"><span
+                            class="sidebar-icon">⚙️</span><span class="sidebar-link-text">Settings</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-footer hide-mobile">
+                <div class="sidebar-footer-card">
+                    <div class="footer-icon">💡</div>
+                    <p>Need help managing leads?</p>
+                    <button class="btn btn-primary btn-sm">View Guide</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Create New Lead</h1>
+                <div class="breadcrumb">
+                    <a href="index.html">Dashboard</a>
+                    <span class="separator">/</span>
+                    <span>Create Lead</span>
+                </div>
+            </div>
+
+            <form id="createLeadForm" class="lead-form-container" novalidate>
+
+                <!-- ─────── SECTION 1: Student Information ─────── -->
+                <div class="form-section" id="sectionStudent">
+                    <div class="form-section-header">
+                        <div class="section-icon">👤</div>
+                        <div class="section-title">
+                            <h3>Student Information</h3>
+                            <p>Basic personal details of the student</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="title">Title</label>
+                                <select class="form-control" id="title" name="title">
+                                    <option value="">Select Title</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Dr">Dr</option>
+                                    <option value="Prof">Prof</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name <span
+                                        class="required">*</span></label>
+                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                    placeholder="Enter first name" required />
+                                <span class="form-error">First name is required</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                    placeholder="Enter last name" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="dateOfEnquiry">Date of Enquiry</label>
+                                <input type="date" class="form-control" id="dateOfEnquiry" name="dateOfEnquiry" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="phoneNumber">Phone Number <span
+                                        class="required">*</span></label>
+                                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                                    placeholder="+91 XXXXX XXXXX" required />
+                                <span class="form-error">Phone number is required</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="altNumber">Alternative Number</label>
+                                <input type="tel" class="form-control" id="altNumber" name="altNumber"
+                                    placeholder="+91 XXXXX XXXXX" />
+                            </div>
+
+                            <div class="form-group span-2">
+                                <label class="form-label" for="emailAddress">Email Address</label>
+                                <input type="email" class="form-control" id="emailAddress" name="emailAddress"
+                                    placeholder="student@email.com" />
+                                <span class="form-error">Enter a valid email address</span>
+                            </div>
+
+                            <div class="form-group span-full">
+                                <label class="form-label">Email Options</label>
+                                <div class="checkbox-group">
+                                    <label class="form-check">
+                                        <input type="checkbox" name="primaryEmail" value="yes" />
+                                        <span class="form-check-label">Primary Email</span>
+                                    </label>
+                                    <label class="form-check">
+                                        <input type="checkbox" name="optedOut" value="yes" />
+                                        <span class="form-check-label">Opted Out</span>
+                                    </label>
+                                    <label class="form-check">
+                                        <input type="checkbox" name="invalidEmail" value="yes" />
+                                        <span class="form-check-label">Invalid</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 2: Course Information ─────── -->
+                <div class="form-section" id="sectionCourse">
+                    <div class="form-section-header">
+                        <div class="section-icon">📚</div>
+                        <div class="section-title">
+                            <h3>Course Information</h3>
+                            <p>Course and training preferences</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group span-full">
+                                <label class="form-label">Mode of Training</label>
+                                <div class="radio-group">
+                                    <div class="radio-pill">
+                                        <input type="radio" name="modeOfTraining" id="trainOnline" value="Online" />
+                                        <label for="trainOnline">Online</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="modeOfTraining" id="trainOffline" value="Offline" />
+                                        <label for="trainOffline">Offline</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="modeOfTraining" id="trainNone" value="None" checked />
+                                        <label for="trainNone">None</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="courseApplied">Course Applied</label>
+                                <select class="form-control" id="courseApplied" name="courseApplied">
+                                    <option value="">Select Course</option>
+                                    <option value="Advance AWS">Advance AWS</option>
+                                    <option value="SOC Analyst">SOC Analyst</option>
+                                    <option value="Cyber Security">Cyber Security</option>
+                                    <option value="Ethical Hacking">Ethical Hacking</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="studentState">Student State</label>
+                                <select class="form-control" id="studentState" name="studentState">
+                                    <option value="">Select State</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Hyderabad">Hyderabad</option>
+                                    <option value="Chennai">Chennai</option>
+                                    <option value="Pune">Pune</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="studentLocation">Student Location</label>
+                                <input type="text" class="form-control" id="studentLocation" name="studentLocation"
+                                    placeholder="Enter city / area" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="designation">Designation</label>
+                                <select class="form-control" id="designation" name="designation">
+                                    <option value="">Select Designation</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Working">Working</option>
+                                    <option value="Other">Other</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="centerLocation">Center Location</label>
+                                <select class="form-control" id="centerLocation" name="centerLocation">
+                                    <option value="None">None</option>
+                                    <option value="Kolkata">Kolkata</option>
+                                    <option value="Hyderabad">Hyderabad</option>
+                                    <option value="Chennai">Chennai</option>
+                                    <option value="Orissa">Orissa</option>
+                                    <option value="Bangalore">Bangalore</option>
+                                    <option value="Ranchi">Ranchi</option>
+                                    <option value="Dhanbad">Dhanbad</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Bhubaneswar">Bhubaneswar</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="offerValidTill">Offer Valid Till</label>
+                                <input type="date" class="form-control" id="offerValidTill" name="offerValidTill" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="offeredCourseFee">Offered Course Fee</label>
+                                <input type="number" class="form-control" id="offeredCourseFee" name="offeredCourseFee"
+                                    placeholder="₹0.00" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 3: Lead Source ─────── -->
+                <div class="form-section" id="sectionSource">
+                    <div class="form-section-header">
+                        <div class="section-icon">🔗</div>
+                        <div class="section-title">
+                            <h3>Lead Source</h3>
+                            <p>How the lead was acquired</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="sourceOfLead">Source of Lead</label>
+                                <select class="form-control" id="sourceOfLead" name="sourceOfLead">
+                                    <option value="">Select Source</option>
+                                    <option value="Google Search">Google Search</option>
+                                    <option value="Whatsapp">Whatsapp</option>
+                                    <option value="Tawk.to">Tawk.to</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Referred from Friend">Referred from Friend</option>
+                                    <option value="Direct Phone">Direct Phone</option>
+                                    <option value="Direct Email">Direct Email</option>
+                                    <option value="Website">Website</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Land Phone">Land Phone</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="SMS">SMS</option>
+                                    <option value="Whatsapp Ads">Whatsapp Ads</option>
+                                    <option value="Brainwork Academy">Brainwork Academy</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="nextCourseSuggested">Next Course Suggested</label>
+                                <select class="form-control" id="nextCourseSuggested" name="nextCourseSuggested">
+                                    <option value="">Select Course</option>
+                                    <option value="Advance AWS">Advance AWS</option>
+                                    <option value="SOC Analyst">SOC Analyst</option>
+                                    <option value="Cyber Security">Cyber Security</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 4: Follow Up Details ─────── -->
+                <div class="form-section" id="sectionFollowup">
+                    <div class="form-section-header">
+                        <div class="section-icon">📞</div>
+                        <div class="section-title">
+                            <h3>Follow Up Details</h3>
+                            <p>Feedback and followup scheduling</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group span-full">
+                                <label class="form-label" for="previousFeedback">Previous Feedback</label>
+                                <textarea class="form-control" id="previousFeedback" name="previousFeedback" rows="3"
+                                    placeholder="Enter previous feedback..."></textarea>
+                            </div>
+
+                            <div class="form-group span-full">
+                                <label class="form-label" for="recentFeedback">Recent Feedback</label>
+                                <textarea class="form-control" id="recentFeedback" name="recentFeedback" rows="3"
+                                    placeholder="Enter recent feedback..."></textarea>
+                            </div>
+
+                            <div class="form-group span-full">
+                                <label class="form-label" for="currentFeedback">Current Feedback</label>
+                                <textarea class="form-control" id="currentFeedback" name="currentFeedback" rows="3"
+                                    placeholder="Enter current feedback..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="leadCondition">Lead Condition</label>
+                                <select class="form-control" id="leadCondition" name="leadCondition">
+                                    <option value="None">None</option>
+                                    <option value="Money Problem">Money Problem</option>
+                                    <option value="Online / Internet Issue">Online / Internet Issue</option>
+                                    <option value="Will Do Later">Will Do Later</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="dateOfCalling">Date of Calling</label>
+                                <input type="date" class="form-control" id="dateOfCalling" name="dateOfCalling" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="callerName">Caller Name</label>
+                                <input type="text" class="form-control" id="callerName" name="callerName"
+                                    placeholder="Enter caller name" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="officeVisitedDate">Office Visited Date</label>
+                                <input type="date" class="form-control" id="officeVisitedDate"
+                                    name="officeVisitedDate" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="followupDate">Followup Date</label>
+                                <input type="date" class="form-control" id="followupDate" name="followupDate" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="followupCallerName">Followup Caller Name</label>
+                                <input type="text" class="form-control" id="followupCallerName"
+                                    name="followupCallerName" placeholder="Enter followup caller" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="followupStatus">Followup Status</label>
+                                <select class="form-control" id="followupStatus" name="followupStatus">
+                                    <option value="None">None</option>
+                                    <option value="Positive">Positive</option>
+                                    <option value="Maybe Positive">Maybe Positive</option>
+                                    <option value="Not Positive">Not Positive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 5: Campaign ─────── -->
+                <div class="form-section" id="sectionCampaign">
+                    <div class="form-section-header">
+                        <div class="section-icon">📧</div>
+                        <div class="section-title">
+                            <h3>Campaign</h3>
+                            <p>Email and SMS campaign preferences</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Email Campaign</label>
+                                <div class="radio-group">
+                                    <div class="radio-pill">
+                                        <input type="radio" name="emailCampaign" id="emailYes" value="Yes" />
+                                        <label for="emailYes">Yes</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="emailCampaign" id="emailNo" value="No" />
+                                        <label for="emailNo">No</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="emailCampaign" id="emailNone" value="None" checked />
+                                        <label for="emailNone">None</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">SMS Campaign</label>
+                                <div class="radio-group">
+                                    <div class="radio-pill">
+                                        <input type="radio" name="smsCampaign" id="smsYes" value="Yes" />
+                                        <label for="smsYes">Yes</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="smsCampaign" id="smsNo" value="No" />
+                                        <label for="smsNo">No</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="smsCampaign" id="smsNone" value="None" checked />
+                                        <label for="smsNone">None</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 6: Assign User ─────── -->
+                <div class="form-section" id="sectionAssign">
+                    <div class="form-section-header">
+                        <div class="section-icon">👥</div>
+                        <div class="section-title">
+                            <h3>Assign User</h3>
+                            <p>Assign a team member to this lead</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid form-grid-1">
+                            <div class="form-group">
+                                <label class="form-label">Assigned To</label>
+                                <div class="searchable-select" id="assignedToSelect">
+                                    <input type="hidden" name="assignedTo" id="assignedTo" />
+                                    <div class="searchable-select-trigger">
+                                        <span class="trigger-text" data-placeholder="Select user…">Select user…</span>
+                                        <span class="chevron">▾</span>
+                                    </div>
+                                    <div class="searchable-select-dropdown">
+                                        <div class="searchable-select-search">
+                                            <input type="text" placeholder="Search users…" />
+                                        </div>
+                                        <div class="searchable-select-options">
+                                            <div class="searchable-select-option" data-value="Rajesh M.">Rajesh M.</div>
+                                            <div class="searchable-select-option" data-value="Suman P.">Suman P.</div>
+                                            <div class="searchable-select-option" data-value="Amit K.">Amit K.</div>
+                                            <div class="searchable-select-option" data-value="Priya S.">Priya S.</div>
+                                            <div class="searchable-select-option" data-value="Neha D.">Neha D.</div>
+                                            <div class="searchable-select-option" data-value="Vikram R.">Vikram R.</div>
+                                            <div class="searchable-select-option" data-value="Ankit G.">Ankit G.</div>
+                                            <div class="searchable-select-option" data-value="Pooja M.">Pooja M.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 7: Demo Details ─────── -->
+                <div class="form-section" id="sectionDemo">
+                    <div class="form-section-header">
+                        <div class="section-icon">🎥</div>
+                        <div class="section-title">
+                            <h3>Demo Details</h3>
+                            <p>Demo session scheduling and status</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="demoStatus">Demo Status</label>
+                                <select class="form-control" id="demoStatus" name="demoStatus">
+                                    <option value="Not Scheduled">Not Scheduled</option>
+                                    <option value="Scheduled">Scheduled</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="demoDate">Demo Date</label>
+                                <input type="date" class="form-control" id="demoDate" name="demoDate" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 8: Admission Details ─────── -->
+                <div class="form-section" id="sectionAdmission">
+                    <div class="form-section-header">
+                        <div class="section-icon">🎓</div>
+                        <div class="section-title">
+                            <h3>Admission Details</h3>
+                            <p>Admission, class and training details</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="admissionDone">Admission Done</label>
+                                <select class="form-control" id="admissionDone" name="admissionDone">
+                                    <option value="None">None</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="admissionDate">Admission Date</label>
+                                <input type="date" class="form-control" id="admissionDate" name="admissionDate" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Preferred Class Slot</label>
+                                <div class="radio-group">
+                                    <div class="radio-pill">
+                                        <input type="radio" name="preferredSlot" id="slotWeekday" value="Weekday" />
+                                        <label for="slotWeekday">Weekday</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="preferredSlot" id="slotWeekend" value="Weekend" />
+                                        <label for="slotWeekend">Weekend</label>
+                                    </div>
+                                    <div class="radio-pill">
+                                        <input type="radio" name="preferredSlot" id="slotOnline" value="Online" />
+                                        <label for="slotOnline">Online</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="admittedCourseName">Admitted Course Name</label>
+                                <select class="form-control" id="admittedCourseName" name="admittedCourseName">
+                                    <option value="">Select Course</option>
+                                    <option value="SOC Analyst">SOC Analyst</option>
+                                    <option value="Advance AWS">Advance AWS</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="classStatus">Class Status</label>
+                                <select class="form-control" id="classStatus" name="classStatus">
+                                    <option value="None">None</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="classMode">Class Mode</label>
+                                <select class="form-control" id="classMode" name="classMode">
+                                    <option value="Normal">Normal</option>
+                                    <option value="Fasttrack">Fasttrack</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="trainingMode">Training Mode</label>
+                                <select class="form-control" id="trainingMode" name="trainingMode">
+                                    <option value="Online">Online</option>
+                                    <option value="Offline">Offline</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 9: Revenue Details ─────── -->
+                <div class="form-section" id="sectionRevenue">
+                    <div class="form-section-header">
+                        <div class="section-icon">💰</div>
+                        <div class="section-title">
+                            <h3>Revenue Details</h3>
+                            <p>Payment installments and revenue tracking</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="totalCourseAmount">Total Course Amount</label>
+                                <input type="number" class="form-control" id="totalCourseAmount"
+                                    name="totalCourseAmount" placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="totalPaidAmount">Total Paid Amount</label>
+                                <input type="number" class="form-control" id="totalPaidAmount" name="totalPaidAmount"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="totalDueAmount">Total Due Amount</label>
+                                <input type="number" class="form-control" id="totalDueAmount" name="totalDueAmount"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="firstInstallment">First Installment</label>
+                                <input type="number" class="form-control" id="firstInstallment" name="firstInstallment"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="secondInstallment">Second Installment</label>
+                                <input type="number" class="form-control" id="secondInstallment"
+                                    name="secondInstallment" placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="thirdInstallment">Third Installment</label>
+                                <input type="number" class="form-control" id="thirdInstallment" name="thirdInstallment"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="fourthInstallment">Fourth Installment</label>
+                                <input type="number" class="form-control" id="fourthInstallment"
+                                    name="fourthInstallment" placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="fifthInstallment">Fifth Installment</label>
+                                <input type="number" class="form-control" id="fifthInstallment" name="fifthInstallment"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="sixthInstallment">Sixth Installment</label>
+                                <input type="number" class="form-control" id="sixthInstallment" name="sixthInstallment"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="nextPayableAmount">Next Payable Amount</label>
+                                <input type="number" class="form-control" id="nextPayableAmount"
+                                    name="nextPayableAmount" placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="nextPaymentDate">Next Payment Date</label>
+                                <input type="date" class="form-control" id="nextPaymentDate" name="nextPaymentDate" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="remarksPayment">Remarks Payment</label>
+                                <input type="text" class="form-control" id="remarksPayment" name="remarksPayment"
+                                    placeholder="Enter payment remarks" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="ecCouncilPaid">EC Council Amount Paid</label>
+                                <input type="number" class="form-control" id="ecCouncilPaid" name="ecCouncilPaid"
+                                    placeholder="₹0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="ecCouncilDue">EC Council Amount Due</label>
+                                <input type="number" class="form-control" id="ecCouncilDue" name="ecCouncilDue"
+                                    placeholder="₹0.00" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─────── SECTION 10: Remarks ─────── -->
+                <div class="form-section" id="sectionRemarks">
+                    <div class="form-section-header">
+                        <div class="section-icon">📝</div>
+                        <div class="section-title">
+                            <h3>Remarks</h3>
+                            <p>Additional notes about this lead</p>
+                        </div>
+                        <span class="section-collapse-icon">▾</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-grid form-grid-1">
+                            <div class="form-group">
+                                <label class="form-label" for="remark">Remark</label>
+                                <textarea class="form-control" id="remark" name="remark" rows="4"
+                                    placeholder="Type your remarks here…"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- ─────── FORM FOOTER ─────── -->
+            <div class="form-footer">
+                <div class="form-footer-left">
+                    <div class="autosave-indicator">
+                        <span class="autosave-dot"></span>
+                        <span class="autosave-text">Draft auto-saved</span>
+                    </div>
+                </div>
+                <div class="form-footer-right">
+                    <button class="btn btn-ghost" id="changeLogBtn">
+                        <span class="btn-text">📜 View Change Log</span>
+                    </button>
+                    <button class="btn btn-secondary" id="cancelBtn">
+                        <span class="btn-text">Cancel</span>
+                    </button>
+                    <button class="btn btn-secondary" id="saveContinueBtn">
+                        <span class="btn-text">Save & Continue</span>
+                    </button>
+                    <button class="btn btn-primary" id="saveBtn">
+                        <span class="btn-text">💾 Save Lead</span>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ═══════════════ CHANGE LOG MODAL ═══════════════ -->
+    <div class="modal-overlay" id="changeLogModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Change Log</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-item" style="margin-bottom: 16px;">
+                    <div class="detail-label">14 Mar 2026, 13:27</div>
+                    <div class="detail-value">Lead created by Admin User</div>
+                </div>
+                <div class="detail-item" style="margin-bottom: 16px;">
+                    <div class="detail-label">14 Mar 2026, 13:30</div>
+                    <div class="detail-value">Assigned to Rajesh M.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">14 Mar 2026, 13:45</div>
+                    <div class="detail-value">Status updated to "Contacted"</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/create-lead.js"></script>
+</body>
+
+</html>

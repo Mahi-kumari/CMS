@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ICSS CRM Dashboard — Monitor leads, admissions, revenue and followups at a glance." />
+    <title>Dashboard | ICSS CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+
+  <body>
+    <!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+    <nav class="navbar" id="navbar">
+      <div class="navbar-brand">
+        <button class="navbar-hamburger show-mobile" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+        <div class="navbar-logo">IC</div>
+        <div class="navbar-brand-text hide-mobile">
+          <span class="navbar-brand-name">ICSS CRM</span>
+          <span class="navbar-brand-sub">Management Suite</span>
+        </div>
+      </div>
+
+      <div class="navbar-center hide-mobile">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="globalSearch" placeholder="Search leads, contacts, courses…" autocomplete="off" />
+          <span class="search-shortcut">Ctrl+K</span>
+        </div>
+      </div>
+
+      <div class="navbar-actions">
+        <button class="navbar-action-btn" data-tooltip="Notifications" id="notificationBtn">
+          🔔
+          <span class="notification-dot"></span>
+        </button>
+        <button class="navbar-action-btn hide-mobile" data-tooltip="Help">❓</button>
+
+        <div class="profile-wrapper">
+          <div class="profile-trigger">
+            <div class="profile-avatar">AD</div>
+            <div class="profile-info hide-mobile">
+              <span class="profile-name">Admin User</span>
+              <span class="profile-role">Administrator</span>
+            </div>
+            <span class="profile-chevron hide-mobile">▾</span>
+          </div>
+          <div class="profile-dropdown">
+            <div class="dropdown-header">
+              <div class="profile-name">Admin User</div>
+              <div class="profile-email">admin@icsscrm.com</div>
+            </div>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="settings.html">
+                <span class="dropdown-icon">👤</span> My Profile
+              </a>
+              <a class="dropdown-item" href="settings.html">
+                <span class="dropdown-icon">⚙️</span> Settings
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item danger" href="../Register/login.html">
+                <span class="dropdown-icon">🚪</span> Logout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ═══════════════ SIDEBAR OVERLAY (mobile) ═══════════════ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ═══════════════ APP SHELL ═══════════════ -->
+    <div class="app-shell">
+      <!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
+      <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">Main</div>
+            <a href="index.html" class="sidebar-link active" data-tooltip="Dashboard">
+              <span class="sidebar-icon">📊</span>
+              <span class="sidebar-link-text">Dashboard</span>
+            </a>
+            <a href="create-lead.html" class="sidebar-link" data-tooltip="Create Lead">
+              <span class="sidebar-icon">➕</span>
+              <span class="sidebar-link-text">Create Lead</span>
+            </a>
+            <a href="view-leads.html" class="sidebar-link" data-tooltip="View Leads">
+              <span class="sidebar-icon">📋</span>
+              <span class="sidebar-link-text">View Leads</span>
+              <span class="sidebar-badge">15</span>
+            </a>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">System</div>
+            <a href="settings.html" class="sidebar-link" data-tooltip="Settings">
+              <span class="sidebar-icon">⚙️</span>
+              <span class="sidebar-link-text">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer hide-mobile">
+          <div class="sidebar-footer-card">
+            <div class="footer-icon">💡</div>
+            <p>Need help managing leads?</p>
+            <button class="btn btn-primary btn-sm">View Guide</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+      <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <h2>Welcome back, Admin 👋</h2>
+          <p>Here's what's happening with your leads today.</p>
+          <div class="welcome-date hide-mobile">
+            <div class="date-day">14</div>
+            <div class="date-month">March 2026</div>
+          </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card accent-primary" data-metric="totalLeads">
+            <div class="metric-icon icon-primary">📈</div>
+            <div class="metric-content">
+              <div class="metric-value">0</div>
+              <div class="metric-label">Total Leads</div>
+              <div class="metric-trend up">↑ +12.5%</div>
+            </div>
+          </div>
+
+          <div class="metric-card accent-info" data-metric="newLeadsToday">
+            <div class="metric-icon icon-info">🆕</div>
+            <div class="metric-content">
+              <div class="metric-value">0</div>
+              <div class="metric-label">New Leads Today</div>
+              <div class="metric-trend up">↑ +8.3%</div>
+            </div>
+          </div>
+
+          <div class="metric-card accent-success" data-metric="admissionsToday">
+            <div class="metric-icon icon-success">🎓</div>
+            <div class="metric-content">
+              <div class="metric-value">0</div>
+              <div class="metric-label">Admissions Today</div>
+              <div class="metric-trend up">↑ +2.1%</div>
+            </div>
+          </div>
+
+          <div class="metric-card accent-warning" data-metric="pendingFollowups">
+            <div class="metric-icon icon-warning">📞</div>
+            <div class="metric-content">
+              <div class="metric-value">0</div>
+              <div class="metric-label">Pending Followups</div>
+              <div class="metric-trend down">↓ -3.2%</div>
+            </div>
+          </div>
+
+          <div class="metric-card accent-primary" data-metric="totalRevenue">
+            <div class="metric-icon icon-primary">💰</div>
+            <div class="metric-content">
+              <div class="metric-value">₹0</div>
+              <div class="metric-label">Total Revenue</div>
+              <div class="metric-trend up">↑ +15.7%</div>
+            </div>
+          </div>
+
+          <div class="metric-card accent-danger" data-metric="pendingPayments">
+            <div class="metric-icon icon-danger">⏳</div>
+            <div class="metric-content">
+              <div class="metric-value">0</div>
+              <div class="metric-label">Pending Payments</div>
+              <div class="metric-trend up">↑ +4.0%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="tables-grid">
+          <!-- Recent Leads -->
+          <div class="table-card">
+            <div class="card-header">
+              <h3><span class="header-icon">📋</span> Recent Leads</h3>
+              <a href="view-leads.html" class="view-all-link">View All →</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Lead Name</th>
+                    <th>Phone</th>
+                    <th>Course</th>
+                    <th>Assigned</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="recentLeadsTbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Upcoming Followups -->
+          <div class="table-card">
+            <div class="card-header">
+              <h3><span class="header-icon">📞</span> Upcoming Followups</h3>
+              <a href="view-leads.html" class="view-all-link">View All →</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Lead Name</th>
+                    <th>Phone</th>
+                    <th>Followup Date</th>
+                    <th>Assigned</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="followupsTbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ICSS CRM — Manage your profile, notifications and application settings." />
+    <title>Settings | ICSS CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/settings.css" />
+</head>
+
+<body>
+    <!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <button class="navbar-hamburger show-mobile" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+            <div class="navbar-logo">IC</div>
+            <div class="navbar-brand-text hide-mobile">
+                <span class="navbar-brand-name">ICSS CRM</span>
+                <span class="navbar-brand-sub">Management Suite</span>
+            </div>
+        </div>
+        <div class="navbar-center hide-mobile">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="globalSearch" placeholder="Search leads, contacts, courses…"
+                    autocomplete="off" />
+                <span class="search-shortcut">Ctrl+K</span>
+            </div>
+        </div>
+        <div class="navbar-actions">
+            <button class="navbar-action-btn" data-tooltip="Notifications" id="notificationBtn">🔔<span
+                    class="notification-dot"></span></button>
+            <button class="navbar-action-btn hide-mobile" data-tooltip="Help">❓</button>
+            <div class="profile-wrapper">
+                <div class="profile-trigger">
+                    <div class="profile-avatar">AD</div>
+                    <div class="profile-info hide-mobile">
+                        <span class="profile-name">Admin User</span>
+                        <span class="profile-role">Administrator</span>
+                    </div>
+                    <span class="profile-chevron hide-mobile">▾</span>
+                </div>
+                <div class="profile-dropdown">
+                    <div class="dropdown-header">
+                        <div class="profile-name">Admin User</div>
+                        <div class="profile-email">admin@icsscrm.com</div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">👤</span> My
+                            Profile</a>
+                        <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">⚙️</span> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item danger" href="../Register/login.html"><span
+                                class="dropdown-icon">🚪</span> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-shell">
+        <!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">Main</div>
+                    <a href="index.html" class="sidebar-link" data-tooltip="Dashboard"><span
+                            class="sidebar-icon">📊</span><span class="sidebar-link-text">Dashboard</span></a>
+                    <a href="create-lead.html" class="sidebar-link" data-tooltip="Create Lead"><span
+                            class="sidebar-icon">➕</span><span class="sidebar-link-text">Create Lead</span></a>
+                    <a href="view-leads.html" class="sidebar-link" data-tooltip="View Leads"><span
+                            class="sidebar-icon">📋</span><span class="sidebar-link-text">View Leads</span><span
+                            class="sidebar-badge">15</span></a>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">System</div>
+                    <a href="settings.html" class="sidebar-link active" data-tooltip="Settings"><span
+                            class="sidebar-icon">⚙️</span><span class="sidebar-link-text">Settings</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-footer hide-mobile">
+                <div class="sidebar-footer-card">
+                    <div class="footer-icon">💡</div>
+                    <p>Need help managing leads?</p>
+                    <button class="btn btn-primary btn-sm">View Guide</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Settings</h1>
+                <div class="breadcrumb">
+                    <a href="index.html">Dashboard</a>
+                    <span class="separator">/</span>
+                    <span>Settings</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs" data-tab-group="settingsTabs">
+                <div class="tab-item active" data-tab="tabProfile">Profile</div>
+                <div class="tab-item" data-tab="tabNotifications">Notifications</div>
+                <div class="tab-item" data-tab="tabSecurity">Security</div>
+            </div>
+
+            <div data-tab-content="settingsTabs">
+
+                <!-- ═══════ Profile Tab ═══════ -->
+                <div class="tab-content active settings-container" id="tabProfile">
+                    <!-- Profile Card -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Profile Information</h3>
+                            <p>Update your personal details</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="profile-section">
+                                <div class="profile-avatar-large">
+                                    AD
+                                    <button class="avatar-edit-btn" data-tooltip="Change photo">📷</button>
+                                </div>
+                                <div class="profile-meta">
+                                    <h3>Admin User</h3>
+                                    <p>admin@icsscrm.com · Administrator</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid"
+                                style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px 24px;">
+                                <div class="form-group">
+                                    <label class="form-label" for="settingFullName">Full Name</label>
+                                    <input type="text" class="form-control" id="settingFullName" value="Admin User" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="settingEmail">Email</label>
+                                    <input type="email" class="form-control" id="settingEmail"
+                                        value="admin@icsscrm.com" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="settingPhone">Phone</label>
+                                    <input type="text" class="form-control" id="settingPhone" value="+91 98765 43210" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="settingRole">Role</label>
+                                    <input type="text" class="form-control" id="settingRole" value="Administrator"
+                                        disabled />
+                                </div>
+                            </div>
+
+                            <div class="settings-footer">
+                                <button class="btn btn-secondary" id="cancelProfileBtn"><span
+                                        class="btn-text">Cancel</span></button>
+                                <button class="btn btn-primary" id="saveProfileBtn"><span class="btn-text">Save
+                                        Changes</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════ Notifications Tab ═══════ -->
+                <div class="tab-content settings-container" id="tabNotifications">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Notification Preferences</h3>
+                            <p>Control how you receive notifications</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive email alerts for new leads and followups</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="emailNotif" checked />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>SMS Notifications</h4>
+                                    <p>Get SMS alerts for urgent followups</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="smsNotif" />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Browser Push Notifications</h4>
+                                    <p>Show desktop notifications in your browser</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="pushNotif" checked />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Daily Summary Email</h4>
+                                    <p>Receive a daily report of your leads activity</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="dailySummary" checked />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Sound Alerts</h4>
+                                    <p>Play a sound when new notifications arrive</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="soundAlert" />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════ Security Tab ═══════ -->
+                <div class="tab-content settings-container" id="tabSecurity">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Change Password</h3>
+                            <p>Update your account password</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <div style="display:flex; flex-direction:column; gap:16px; max-width:400px;">
+                                <div class="form-group">
+                                    <label class="form-label" for="currentPassword">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword"
+                                        placeholder="Enter current password" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="newPassword">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword"
+                                        placeholder="Enter new password" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        placeholder="Confirm new password" />
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" id="changePasswordBtn"><span class="btn-text">Update
+                                            Password</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="settings-card danger-zone">
+                        <div class="settings-card-header">
+                            <h3>⚠️ Danger Zone</h3>
+                            <p>Irreversible actions</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Delete Account</h4>
+                                    <p>Permanently delete your account and all data. This cannot be undone.</p>
+                                </div>
+                                <button class="btn btn-danger btn-sm"><span class="btn-text">Delete
+                                        Account</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+
+</html>
