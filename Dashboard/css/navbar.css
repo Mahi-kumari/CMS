@@ -144,6 +144,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
+    position: relative;
 }
 
 .navbar-action-btn {
@@ -175,6 +176,62 @@
     border-radius: 50%;
     border: 2px solid var(--clr-surface);
     animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ---------- Notifications Panel ---------- */
+.notification-panel {
+    position: absolute;
+    width: 320px;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: all var(--transition-fast);
+    z-index: 1200;
+    right: 0;
+    top: calc(100% + 8px);
+}
+
+.notification-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.notification-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--clr-border-light);
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.notification-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--clr-border-light);
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--clr-text);
+    margin-bottom: 4px;
+}
+
+.notification-text {
+    font-size: 0.75rem;
+    color: var(--clr-text-secondary);
 }
 
 @keyframes pulse-dot {

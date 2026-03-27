@@ -18,7 +18,8 @@ body {
 
 .auth-shell {
   width: 820px;
-  height: 460px;
+  min-height: 500px;
+  height: auto;
   max-width: 95vw;
   display: grid;
   grid-template-columns: 360px 1fr;
@@ -31,7 +32,7 @@ body {
 /* LEFT PANEL */
 
 .brand-panel {
-  background: linear-gradient(160deg, #2aa88f, #157a67);
+  background: linear-gradient(45deg, #011037, #040074, #011037);
   color: #fff;
   padding: 28px 26px;
   display: flex;
@@ -40,7 +41,7 @@ body {
   padding-bottom: 38px;
   position: relative;
   overflow: visible;
-  height: 100%;
+  height: auto;
 }
 
 /* SOFT BACKGROUND CIRCLE */
@@ -64,7 +65,7 @@ body {
   top: -260px;
   width: 520px;
   height: 520px;
-  background: linear-gradient(160deg, #2aa88f, #157a67);
+  background: linear-gradient(45deg, #011037, #040074, #011037);
   border-radius: 50%;
   z-index: 1;
 }
@@ -104,7 +105,7 @@ body {
   border: none;
   border-radius: 20px;
   background: #fff;
-  color: #157a67;
+  color: #040074;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
@@ -116,7 +117,7 @@ body {
 .brand-login:hover,
 .brand-login:active {
   text-decoration: none;
-  color: #157a67;
+  color: #040074;
 }
 
 .brand-note {
@@ -128,25 +129,25 @@ body {
 /* RIGHT PANEL */
 
 .form-panel {
-  padding: 28px 42px;
+  padding: 22px 36px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
   position: relative;
   z-index: 2;
   background: #fff;
 }
 
 .form-panel h2 {
-  font-size: 22px;
+  font-size: 20px;
   margin-bottom: 6px;
   color: #1c2b2a;
 }
 
 .form-note {
-  font-size: 12px;
+  font-size: 11px;
   color: #7a8c8a;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 /* FORM */
@@ -154,54 +155,64 @@ body {
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+  gap: 5px;
+  font-size: 11px;
   color: #4d5d5b;
 }
 
 .field input {
-  padding: 9px 12px;
+  padding: 8px 10px;
   border: 1px solid #d7e3e1;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 12px;
   outline: none;
 }
 
 .field input:focus {
-  border-color: #1aa88b;
+  border-color: #040074;
+}
+
+/* ERROR TEXT */
+
+.error-text {
+  color: #d32f2f;
+  font-size: 11px;
+  min-height: 14px;
+  margin-top: 2px;
+  display: block;
 }
 
 /* BUTTONS */
 
 .primary-btn {
   margin-top: 6px;
-  padding: 8px 20px;
+  padding: 7px 18px;
   border: none;
   border-radius: 25px;
-  background: #1aa88b;
+  background: #040074;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  width: 130px;
+  width: 120px;
 }
 
 .primary-btn:hover {
-  background: #0f8b72;
+  background: #011037;
 }
 
 .ghost-btn {
-  margin-top: 10px;
-  padding: 8px;
-  border: 1px solid #1aa88b;
+  margin-top: 8px;
+  padding: 7px;
+  border: 1px solid #040074;
   border-radius: 25px;
   background: transparent;
-  color: #1aa88b;
+  color: #040074;
   cursor: pointer;
 }
 

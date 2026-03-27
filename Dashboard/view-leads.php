@@ -1,3 +1,42 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../config/session.php';
+start_secure_session('CRM_USERSESSID');
+
+$hasUser = !empty($_SESSION["user_id"]);
+if (!$hasUser) {
+  header("Location: logout.php");
+  exit;
+}
+
+$fullName = $_SESSION["full_name"] ?? "User";
+$email = $_SESSION["email"] ?? "user@example.com";
+
+$parts = preg_split("/\\s+/", trim($fullName));
+$initials = "";
+foreach ($parts as $p) {
+  if ($p !== "") {
+    $initials .= strtoupper($p[0]);
+  }
+  if (strlen($initials) >= 2) break;
+}
+if ($initials === "") $initials = "U";
+
+require __DIR__ . "/../config/crm.php";
+$leadCount = 0;
+try {
+    $mysqli = db_connect();
+    $res = $mysqli->query("SELECT COUNT(*) AS c FROM leads");
+    if ($res) {
+        $leadCount = (int)($res->fetch_assoc()["c"] ?? 0);
+        $res->free();
+    }
+    $mysqli->close();
+} catch (Throwable $e) {
+    $leadCount = 0;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,38 +66,29 @@
                 <span class="navbar-brand-sub">Management Suite</span>
             </div>
         </div>
-        <div class="navbar-center hide-mobile">
-            <div class="search-wrapper">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" id="globalSearch" placeholder="Search leads, contacts, courses…"
-                    autocomplete="off" />
-                <span class="search-shortcut">Ctrl+K</span>
-            </div>
         </div>
         <div class="navbar-actions">
             <button class="navbar-action-btn" data-tooltip="Notifications" id="notificationBtn">🔔<span
                     class="notification-dot"></span></button>
-            <button class="navbar-action-btn hide-mobile" data-tooltip="Help">❓</button>
             <div class="profile-wrapper">
                 <div class="profile-trigger">
-                    <div class="profile-avatar">AD</div>
+                    <div class="profile-avatar"><?php echo htmlspecialchars($initials); ?></div>
                     <div class="profile-info hide-mobile">
-                        <span class="profile-name">Admin User</span>
-                        <span class="profile-role">Administrator</span>
-                    </div>
+                        <span class="profile-name"><?php echo htmlspecialchars($fullName); ?></span>
+                        </div>
                     <span class="profile-chevron hide-mobile">▾</span>
                 </div>
                 <div class="profile-dropdown">
                     <div class="dropdown-header">
-                        <div class="profile-name">Admin User</div>
-                        <div class="profile-email">admin@icsscrm.com</div>
+                        <div class="profile-name"><?php echo htmlspecialchars($fullName); ?></div>
+                        <div class="profile-email"><?php echo htmlspecialchars($email); ?></div>
                     </div>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">👤</span> My
                             Profile</a>
                         <a class="dropdown-item" href="settings.html"><span class="dropdown-icon">⚙️</span> Settings</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item danger" href="../Register/login.html"><span
+                        <a class="dropdown-item danger" href="logout.php"><span
                                 class="dropdown-icon">🚪</span> Logout</a>
                     </div>
                 </div>
@@ -77,31 +107,41 @@
                     <path d="M15 18l-6-6 6-6" />
                 </svg>
             </button>
-            <nav class="sidebar-nav">
-                <div class="sidebar-section">
-                    <div class="sidebar-section-label">Main</div>
-                    <a href="index.html" class="sidebar-link" data-tooltip="Dashboard"><span
-                            class="sidebar-icon">📊</span><span class="sidebar-link-text">Dashboard</span></a>
-                    <a href="create-lead.html" class="sidebar-link" data-tooltip="Create Lead"><span
-                            class="sidebar-icon">➕</span><span class="sidebar-link-text">Create Lead</span></a>
-                    <a href="view-leads.html" class="sidebar-link active" data-tooltip="View Leads"><span
-                            class="sidebar-icon">📋</span><span class="sidebar-link-text">View Leads</span><span
-                            class="sidebar-badge">15</span></a>
-                </div>
-                <div class="sidebar-section">
-                    <div class="sidebar-section-label">System</div>
-                    <a href="settings.html" class="sidebar-link" data-tooltip="Settings"><span
-                            class="sidebar-icon">⚙️</span><span class="sidebar-link-text">Settings</span></a>
-                </div>
-            </nav>
-            <div class="sidebar-footer hide-mobile">
-                <div class="sidebar-footer-card">
-                    <div class="footer-icon">💡</div>
-                    <p>Need help managing leads?</p>
-                    <button class="btn btn-primary btn-sm">View Guide</button>
-                </div>
-            </div>
-        </aside>
+                    <nav class="sidebar-nav">
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">Main</div>
+            <a href="index.php" class="sidebar-link" data-tooltip="Dashboard">
+              <span class="sidebar-icon">&#x1F4CA;</span>
+              <span class="sidebar-link-text">Dashboard</span>
+            </a>
+            <a href="create-lead.php" class="sidebar-link" data-tooltip="Create Lead">
+              <span class="sidebar-icon">&#x2795;</span>
+              <span class="sidebar-link-text">Create Lead</span>
+            </a>
+            <a href="view-leads.php" class="sidebar-link active" data-tooltip="View Leads">
+              <span class="sidebar-icon">&#x1F4CB;</span>
+              <span class="sidebar-link-text">View Leads</span>
+              <span class="sidebar-badge"><?php echo (int)$leadCount; ?></span>
+            </a>
+            <a href="followups.php" class="sidebar-link" data-tooltip="Today''s Follow-up">
+              <span class="sidebar-icon">&#x1F4C5;</span>
+              <span class="sidebar-link-text">Today''s Follow-up</span>
+            </a>
+            <a href="faculty-routine.php" class="sidebar-link" data-tooltip="Faculty Routine">
+              <span class="sidebar-icon">&#x1F4DA;</span>
+              <span class="sidebar-link-text">Faculty Routine</span>
+            </a>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">System</div>
+            <a href="settings.php" class="sidebar-link" data-tooltip="Settings">
+              <span class="sidebar-icon">&#x2699;&#xFE0F;</span>
+              <span class="sidebar-link-text">Settings</span>
+            </a>
+          </div>
+        </nav>
+</aside>
 
         <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
         <main class="main-content">
@@ -110,12 +150,12 @@
                 <div>
                     <h1>View Leads</h1>
                     <div class="breadcrumb">
-                        <a href="index.html">Dashboard</a>
+                        <a href="index.php">Dashboard</a>
                         <span class="separator">/</span>
                         <span>View Leads</span>
                     </div>
                 </div>
-                <a href="create-lead.html" class="btn btn-primary">➕ <span class="btn-text">New Lead</span></a>
+                <a href="create-lead.php" class="btn btn-primary">➕ <span class="btn-text">New Lead</span></a>
             </div>
 
             <!-- Toolbar -->
@@ -128,34 +168,9 @@
                 </div>
                 <div class="toolbar-right">
                     <div class="filter-group">
-                        <select class="filter-select" id="filterCourse">
-                            <option value="">All Courses</option>
-                            <option value="Advance AWS">Advance AWS</option>
-                            <option value="SOC Analyst">SOC Analyst</option>
-                            <option value="Cyber Security">Cyber Security</option>
-                            <option value="Ethical Hacking">Ethical Hacking</option>
-                        </select>
-                        <select class="filter-select" id="filterSource">
-                            <option value="">All Sources</option>
-                            <option value="Google Search">Google Search</option>
-                            <option value="Facebook">Facebook</option>
-                            <option value="Whatsapp">Whatsapp</option>
-                            <option value="Website">Website</option>
-                            <option value="Workshop">Workshop</option>
-                            <option value="Referred from Friend">Referred</option>
-                            <option value="Direct Phone">Direct Phone</option>
-                            <option value="Direct Email">Direct Email</option>
-                            <option value="Whatsapp Ads">Whatsapp Ads</option>
-                        </select>
-                        <select class="filter-select" id="filterStatus">
-                            <option value="">All Statuses</option>
-                            <option value="New">New</option>
-                            <option value="Contacted">Contacted</option>
-                            <option value="Qualified">Qualified</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Admitted">Admitted</option>
-                        </select>
-                    </div>
+                        <select class="filter-select" id="filterCourse">\n                            <option value="">All Courses</option>\n                        </select>
+                        <select class="filter-select" id="filterSource">\n                            <option value="">All Sources</option>\n                        </select>
+                        </div>
                 </div>
             </div>
 
@@ -206,8 +221,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm modal-close">Close</button>
-                <button class="btn btn-primary btn-sm">Edit Lead</button>
+                <?php if (!empty($_SESSION["is_admin"])) : ?>
+                    <button class="btn btn-primary btn-sm" id="editLeadBtn"><span class="btn-text">Edit Lead</span></button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -231,8 +247,9 @@
         </div>
     </div>
 
-    <script src="js/app.js"></script>
-    <script src="js/view-leads.js"></script>
+    <script src="js/app.js?v=4"></script>
+    <script src="js/view-leads.js?v=6"></script>
 </body>
 
 </html>
+

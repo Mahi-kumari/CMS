@@ -5,6 +5,29 @@
 const App = (() => {
   'use strict';
 
+  const roleParam = window.CRM_ROLE === 'admin' ? 'role=admin' : '';
+  const getCrmBase = () => {
+    const p = window.location.pathname || '';
+    const lower = p.toLowerCase();
+    const idx = lower.indexOf('/crm/');
+    if (idx >= 0) return p.substring(0, idx) + '/crm';
+    return '/CRM';
+  };
+  const crmBase = getCrmBase();
+  window.CRM_BASE = crmBase;
+  const apiBase = window.CRM_ROLE === 'admin' ? `${crmBase}/Dashboard/` : '';
+  const withRole = (url) => {
+    const baseUrl = url.startsWith('api/') ? `${apiBase}${url}` : url;
+    return roleParam ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${roleParam}` : baseUrl;
+  };
+
+  const userSettings = {
+    email_notifications: 0,
+    sound_alerts: 0
+  };
+  let audioCtx = null;
+  let audioUnlocked = false;
+
   // ─── Sidebar ───
   function initSidebar() {
     const body = document.body;
@@ -106,10 +129,109 @@ const App = (() => {
 
     container.appendChild(toast);
 
+    if (userSettings.sound_alerts) {
+      playNotificationSound();
+    }
+
     const closeBtn = toast.querySelector('.toast-close');
     closeBtn.addEventListener('click', () => removeToast(toast));
 
     setTimeout(() => removeToast(toast), duration);
+  }
+
+  // ---------- Notifications ----------
+  function initNotifications() {
+    const btn = document.getElementById('notificationBtn');
+    if (!btn) return;
+
+    let panel = document.querySelector('.notification-panel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'notification-panel';
+      panel.innerHTML = `
+        <div class="notification-header">Notifications</div>
+        <div class="notification-list"></div>
+      `;
+      (btn.closest('.navbar-actions') || document.body).appendChild(panel);
+    }
+
+    const list = panel.querySelector('.notification-list');
+    let lastSignature = null;
+    async function loadNotifications() {
+      try {
+        let res = await fetch(withRole('api/get_notifications.php'), { cache: 'no-store' });
+        if (!res.ok) {
+          const fallback = withRole(window.location.origin + `${crmBase}/Dashboard/api/get_notifications.php`);
+          res = await fetch(fallback, { cache: 'no-store' });
+        }
+        if (!res.ok) throw new Error('Failed to load notifications');
+
+        const data = await res.json();
+        const items = Array.isArray(data?.items) ? data.items : [];
+        if (list) {
+          list.innerHTML = items.length ? items.map(item => `
+            <div class="notification-item">
+              <div class="notification-title">${item.title}</div>
+              <div class="notification-text">${item.text}</div>
+            </div>
+          `).join('') : '<div class="notification-item"><div class="notification-text">No new notifications</div></div>';
+        }
+        const dot = btn.querySelector('.notification-dot');
+        if (dot) dot.style.display = items.length ? '' : 'none';
+        const signature = items.map(i => `${i.title}::${i.text}`).join('|');
+        if (userSettings.sound_alerts && lastSignature !== null && signature !== lastSignature) {
+          playNotificationSound();
+        }
+        lastSignature = signature;
+      } catch (e) {
+        if (list) {
+          list.innerHTML = '<div class="notification-item"><div class="notification-text">No new notifications</div></div>';
+        }
+      }
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loadNotifications();
+      panel.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => {
+      panel.classList.remove('open');
+    });
+
+    // Background polling for new notifications
+    loadNotifications();
+    setInterval(loadNotifications, 15000);
+  }
+
+  function playNotificationSound() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.06;
+      gain.connect(audioCtx.destination);
+
+      const playTone = (freq, start, duration) => {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        osc.start(start);
+        osc.stop(start + duration);
+      };
+
+      const now = audioCtx.currentTime;
+      playTone(660, now, 0.09);
+      playTone(880, now + 0.1, 0.09);
+    } catch (e) {
+      // ignore sound failures
+    }
   }
 
   function removeToast(toast) {
@@ -177,6 +299,36 @@ const App = (() => {
         searchInput.focus();
       }
     });
+
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const query = searchInput.value.trim();
+
+        // If a page-level search exists (View Leads), forward the query.
+        const leadsSearch = document.getElementById('leadsSearch');
+        if (leadsSearch) {
+          leadsSearch.value = query;
+          leadsSearch.dispatchEvent(new Event('input', { bubbles: true }));
+          return;
+        }
+
+        // Fallback: filter any data table rows by text.
+        const tbody = document.querySelector('.data-table tbody');
+        if (!tbody) return;
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        if (!query) {
+          rows.forEach(r => { r.style.display = ''; });
+          return;
+        }
+        const q = query.toLowerCase();
+        rows.forEach(r => {
+          const text = r.textContent.toLowerCase();
+          r.style.display = text.includes(q) ? '' : 'none';
+        });
+      }, 200);
+    });
   }
 
   // ─── Tabs ───
@@ -203,6 +355,68 @@ const App = (() => {
     });
   }
 
+  // ---------- Settings Toggles ----------
+  async function updateUserSetting(key, value) {
+    try {
+      const res = await fetch(withRole('api/update_user_settings.php'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function initSettingsToggles() {
+    const emailToggle = document.getElementById('emailNotif');
+    const soundToggle = document.getElementById('soundAlert');
+
+    if (emailToggle) {
+      userSettings.email_notifications = emailToggle.checked ? 1 : 0;
+      emailToggle.addEventListener('change', async () => {
+        userSettings.email_notifications = emailToggle.checked ? 1 : 0;
+        const ok = await updateUserSetting('email_notifications', userSettings.email_notifications);
+        if (!ok) {
+          emailToggle.checked = !emailToggle.checked;
+          userSettings.email_notifications = emailToggle.checked ? 1 : 0;
+        }
+      });
+    }
+
+    if (soundToggle) {
+      userSettings.sound_alerts = soundToggle.checked ? 1 : 0;
+      soundToggle.addEventListener('change', async () => {
+        userSettings.sound_alerts = soundToggle.checked ? 1 : 0;
+        const ok = await updateUserSetting('sound_alerts', userSettings.sound_alerts);
+        if (!ok) {
+          soundToggle.checked = !soundToggle.checked;
+          userSettings.sound_alerts = soundToggle.checked ? 1 : 0;
+        } else if (userSettings.sound_alerts) {
+          // Play a short test sound when enabling
+          playNotificationSound();
+        }
+      });
+    }
+  }
+
+  function initAudioUnlock() {
+    const unlock = () => {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      audioUnlocked = true;
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+  }
+
   // ─── Format numbers ───
   function formatNumber(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -222,6 +436,27 @@ const App = (() => {
     initModals();
     initSearchShortcut();
     initTabs();
+    initNotifications();
+    initSettingsToggles();
+    initAudioUnlock();
+    loadUserSettings();
+  }
+
+  async function loadUserSettings() {
+    try {
+      const res = await fetch(withRole('api/get_user_settings.php'), { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      userSettings.email_notifications = data.email_notifications ? 1 : 0;
+      userSettings.sound_alerts = data.sound_alerts ? 1 : 0;
+
+      const emailToggle = document.getElementById('emailNotif');
+      if (emailToggle) emailToggle.checked = !!userSettings.email_notifications;
+      const soundToggle = document.getElementById('soundAlert');
+      if (soundToggle) soundToggle.checked = !!userSettings.sound_alerts;
+    } catch (e) {
+      // ignore
+    }
   }
 
   // Public API
@@ -231,8 +466,10 @@ const App = (() => {
     openModal,
     closeModal,
     formatNumber,
-    formatCurrency
+    formatCurrency,
+    playNotificationSound
   };
 })();
 
+window.App = App;
 document.addEventListener('DOMContentLoaded', App.init);

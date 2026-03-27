@@ -1,90 +1,202 @@
 /* ============================================
-   ICSS CRM — Create Lead Form Logic
+   ICSS CRM - Create Lead Form Logic
    ============================================ */
 
 const CreateLead = (() => {
     'use strict';
 
-    const STORAGE_KEY = 'crm_lead_draft';
-    let autoSaveTimer = null;
+    // Lookup Data
+    const roleParam = window.CRM_ROLE === 'admin' ? 'role=admin' : '';
+    const crmBase = window.CRM_BASE || '/CRM';
+    const apiBase = window.CRM_ROLE === 'admin' ? `${crmBase}/Dashboard/` : '';
+    const withRole = (url) => {
+        const baseUrl = url.startsWith('api/') ? `${apiBase}${url}` : url;
+        return roleParam ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${roleParam}` : baseUrl;
+    };
 
-    // ─── Collapsible Sections ───
+    async function loadLookups() {
+        try {
+            let res = await fetch(withRole('api/lookups.php'), { cache: 'no-store' });
+            if (!res.ok) {
+                const fallback = withRole(window.location.origin + `${crmBase}/Dashboard/api/lookups.php`);
+                res = await fetch(fallback, { cache: 'no-store' });
+            }
+            if (!res.ok) {
+                console.warn('Lookup fetch failed:', res.status);
+                return;
+            }
+            const data = await res.json();
+
+            populateSelect('courseApplied', data.courses, 'Select Course');
+            populateSelect('admittedCourseName', data.courses, 'Select Course');
+            populateSelect('nextCourseSuggested', data.courses, 'Select Course');
+            populateSelect('studentState', data.locations, 'Select State');
+            populateSelect('centerLocation', data.locations, 'Select Location');
+            populateSelect('sourceOfLead', data.sources, 'Select Source');
+
+        } catch (e) {
+            console.warn('Failed to load lookups:', e);
+        }
+    }
+
+    /* ---------- INLINE MESSAGE ---------- */
+    function showInlineMessage(type, message) {
+        const el = document.getElementById('formMessage');
+        if (!el) return;
+
+        el.textContent = message;
+        el.className = 'form-message ' + type;
+        el.style.display = 'block';
+
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        setTimeout(() => {
+            el.style.display = 'none';
+        }, 4000);
+    }
+
+    /* ---------- TOAST ---------- */
+    function showToast(icon, title) {
+        ensureSwal().then(() => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon,
+                title,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+    }
+
+    function populateSelect(id, items, placeholder) {
+        const select = document.getElementById(id);
+        if (!select) return;
+
+        select.innerHTML = '';
+
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = placeholder;
+        select.appendChild(defaultOpt);
+
+        const list = Array.isArray(items) ? [...items] : [];
+
+        if (id === 'sourceOfLead' && !list.includes('Other')) list.push('Other');
+        if (id === 'centerLocation' && !list.includes('Other')) list.push('Other');
+
+        list.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item;
+            opt.textContent = item;
+            select.appendChild(opt);
+        });
+    }
+
+    /* ---------- UI FEATURES ---------- */
+
     function initSections() {
         document.querySelectorAll('.form-section-header').forEach(header => {
             header.addEventListener('click', () => {
                 const section = header.closest('.form-section');
-                section.classList.toggle('collapsed');
+                if (section) section.classList.toggle('collapsed');
             });
         });
     }
 
-    // ─── Searchable Selects ───
-    function initSearchableSelects() {
-        document.querySelectorAll('.searchable-select').forEach(wrapper => {
-            const trigger = wrapper.querySelector('.searchable-select-trigger');
-            const dropdown = wrapper.querySelector('.searchable-select-dropdown');
-            const searchInput = wrapper.querySelector('.searchable-select-search input');
-            const options = wrapper.querySelectorAll('.searchable-select-option');
-            const triggerText = trigger.querySelector('.trigger-text');
-            const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+    function initWorkingDetailsToggle() {
+        const professionSelect = document.getElementById('priorKnowledge');
+        const workingGroup = document.getElementById('workingDetailsGroup');
 
-            // Toggle
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Close other selects
-                document.querySelectorAll('.searchable-select.open').forEach(s => {
-                    if (s !== wrapper) s.classList.remove('open');
-                });
-                wrapper.classList.toggle('open');
-                if (wrapper.classList.contains('open') && searchInput) {
-                    setTimeout(() => searchInput.focus(), 100);
+        if (!professionSelect || !workingGroup) return;
+
+        const toggle = () => {
+            workingGroup.style.display = professionSelect.value === 'Working' ? '' : 'none';
+        };
+
+        toggle();
+        professionSelect.addEventListener('change', toggle);
+    }
+
+    function initCounselingDefaults() {
+        const inquiryDate = document.getElementById('inquiryDate');
+
+        if (inquiryDate && !inquiryDate.value) {
+            const today = new Date();
+            inquiryDate.value = today.toISOString().split('T')[0];
+        }
+    }
+
+    function initFeeToggles() {
+        const tokenStatus = document.getElementById('tokenStatus');
+        const tokenGroup = document.getElementById('tokenAmountGroup');
+
+        if (tokenStatus && tokenGroup) {
+            const toggle = () => {
+                tokenGroup.style.display = tokenStatus.value === 'Yes' ? '' : 'none';
+            };
+            toggle();
+            tokenStatus.addEventListener('change', toggle);
+        }
+    }
+
+    function initFeeCalculation() {
+        const courseFee = document.getElementById('courseFee');
+        const discount = document.getElementById('discountApplied');
+        const finalFee = document.getElementById('finalFee');
+        if (!courseFee || !discount || !finalFee) return;
+
+        const toNumber = (value) => {
+            const num = parseFloat(value);
+            return Number.isFinite(num) ? num : 0;
+        };
+
+        const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+
+        const updateFinalFee = () => {
+            const base = toNumber(courseFee.value);
+            const pct = clamp(toNumber(discount.value), 0, 100);
+            if (discount.value !== '' && discount.value != pct) {
+                discount.value = pct;
+            }
+            const discounted = base - (base * pct / 100);
+            finalFee.value = discounted ? discounted.toFixed(2) : '';
+        };
+
+        courseFee.addEventListener('input', updateFinalFee);
+        discount.addEventListener('input', updateFinalFee);
+        updateFinalFee();
+    }
+
+    function initPhoneNumberFilters() {
+        const phoneInput = document.getElementById('phoneNumber');
+        const whatsappInput = document.getElementById('whatsappNumber');
+
+        const bindFilter = (input) => {
+            if (!input) return;
+            input.addEventListener('input', () => {
+                const digits = input.value.replace(/\D/g, '').slice(0, 10);
+                if (input.value !== digits) {
+                    input.value = digits;
                 }
             });
+        };
 
-            // Search
-            if (searchInput) {
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.toLowerCase();
-                    options.forEach(opt => {
-                        const text = opt.textContent.toLowerCase();
-                        opt.classList.toggle('hidden', !text.includes(query));
-                    });
-                });
-            }
-
-            // Select option
-            options.forEach(opt => {
-                opt.addEventListener('click', () => {
-                    options.forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                    if (triggerText) triggerText.textContent = opt.textContent;
-                    if (hiddenInput) hiddenInput.value = opt.dataset.value || opt.textContent;
-                    wrapper.classList.remove('open');
-                    triggerAutoSave();
-                });
-            });
-        });
-
-        // Close on outside click
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.searchable-select.open').forEach(s => {
-                s.classList.remove('open');
-            });
-        });
+        bindFilter(phoneInput);
+        bindFilter(whatsappInput);
     }
 
-    // ─── Form Validation ───
+    /* ---------- VALIDATION ---------- */
+
     function validateForm() {
         let valid = true;
         const form = document.getElementById('createLeadForm');
         if (!form) return true;
 
-        // Clear previous errors
         form.querySelectorAll('.form-group.has-error').forEach(g => {
             g.classList.remove('has-error');
         });
 
-        // Required fields
         form.querySelectorAll('[required]').forEach(input => {
             const group = input.closest('.form-group');
             if (!input.value.trim()) {
@@ -93,223 +205,132 @@ const CreateLead = (() => {
             }
         });
 
-        // Phone validation
-        const phoneInput = form.querySelector('#phoneNumber');
-        if (phoneInput && phoneInput.value.trim()) {
-            const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
-            if (!phoneRegex.test(phoneInput.value.trim())) {
-                const group = phoneInput.closest('.form-group');
-                if (group) {
-                    group.classList.add('has-error');
-                    const errorEl = group.querySelector('.form-error');
-                    if (errorEl) errorEl.textContent = 'Enter a valid phone number';
-                }
-                valid = false;
-            }
-        }
-
-        // Email validation
-        const emailInput = form.querySelector('#emailAddress');
-        if (emailInput && emailInput.value.trim()) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput.value.trim())) {
-                const group = emailInput.closest('.form-group');
-                if (group) {
-                    group.classList.add('has-error');
-                    const errorEl = group.querySelector('.form-error');
-                    if (errorEl) errorEl.textContent = 'Enter a valid email address';
-                }
-                valid = false;
-            }
-        }
-
         return valid;
     }
 
-    // ─── Auto-save Draft ───
-    function triggerAutoSave() {
-        const indicator = document.querySelector('.autosave-indicator');
-        const dot = indicator ? indicator.querySelector('.autosave-dot') : null;
+    /* ---------- SWEETALERT ---------- */
 
-        if (dot) dot.classList.add('saving');
-        if (indicator) {
-            const text = indicator.querySelector('.autosave-text');
-            if (text) text.textContent = 'Saving...';
-        }
+    function ensureSwal() {
+        if (window.Swal) return Promise.resolve(window.Swal);
 
-        clearTimeout(autoSaveTimer);
-        autoSaveTimer = setTimeout(() => {
-            saveDraft();
-            if (dot) dot.classList.remove('saving');
-            if (indicator) {
-                const text = indicator.querySelector('.autosave-text');
-                if (text) text.textContent = 'Draft saved';
-            }
-        }, 1000);
-    }
-
-    function saveDraft() {
-        const form = document.getElementById('createLeadForm');
-        if (!form) return;
-
-        const data = {};
-        form.querySelectorAll('input, select, textarea').forEach(input => {
-            if (input.type === 'checkbox' || input.type === 'radio') {
-                if (input.checked) {
-                    data[input.name || input.id] = input.value;
-                }
-            } else {
-                data[input.name || input.id] = input.value;
-            }
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'js/sweetalert2.min.js';
+            script.onload = () => resolve(window.Swal);
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
-    function loadDraft() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) return;
+    /* ---------- SUBMIT ---------- */
+
+    async function submitLead(form, resetAfter) {
+        const formData = new FormData(form);
 
         try {
-            const data = JSON.parse(saved);
-            const form = document.getElementById('createLeadForm');
-            if (!form) return;
-
-            Object.keys(data).forEach(key => {
-                const input = form.querySelector(`[name="${key}"], #${key}`);
-                if (!input) return;
-
-                if (input.type === 'checkbox' || input.type === 'radio') {
-                    const inputs = form.querySelectorAll(`[name="${key}"]`);
-                    inputs.forEach(inp => {
-                        if (inp.value === data[key]) inp.checked = true;
-                    });
-                } else {
-                    input.value = data[key];
-                }
+            const res = await fetch(withRole('api/save_lead.php'), {
+                method: 'POST',
+                body: formData
             });
 
-            App.showToast('info', 'Draft Restored', 'Your previously saved draft has been loaded.');
-        } catch (e) {
-            console.warn('Failed to load draft:', e);
+            const data = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                const msg = data?.message || 'Failed to save lead.';
+                showInlineMessage('error', msg);
+                showToast('error', 'Save Failed');
+                return false;
+            }
+
+            // ✅ SUCCESS FIX
+            showInlineMessage('success', data?.message || 'Lead saved successfully.');
+            showToast('success', 'Lead Saved');
+
+            if (resetAfter) resetForm();
+
+            return true;
+
+        } catch (err) {
+            showInlineMessage('error', 'Network error. Please try again.');
+            return false;
         }
     }
 
-    function clearDraft() {
-        localStorage.removeItem(STORAGE_KEY);
-    }
+    /* ---------- HANDLERS ---------- */
 
-    // ─── Form Submission ───
     function handleSave(e) {
         e.preventDefault();
 
         if (!validateForm()) {
-            App.showToast('error', 'Validation Error', 'Please fill in all required fields correctly.');
-            // Scroll to first error
-            const firstError = document.querySelector('.form-group.has-error');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            showInlineMessage('error', 'Please fill all required fields.');
             return;
         }
 
-        // Simulate save
-        const btn = e.target.closest('.btn') || document.getElementById('saveBtn');
+        const btn = document.getElementById('saveBtn');
         if (btn) {
-            btn.classList.add('loading');
             btn.disabled = true;
+            btn.classList.add('loading');
         }
 
-        setTimeout(() => {
+        const form = document.getElementById('createLeadForm');
+
+        submitLead(form, true).finally(() => {
             if (btn) {
-                btn.classList.remove('loading');
                 btn.disabled = false;
+                btn.classList.remove('loading');
             }
-            clearDraft();
-            App.showToast('success', 'Lead Created', 'The lead has been saved successfully.');
-        }, 1500);
+        });
     }
 
     function handleSaveAndContinue(e) {
         e.preventDefault();
 
         if (!validateForm()) {
-            App.showToast('error', 'Validation Error', 'Please fill in all required fields correctly.');
+            showInlineMessage('error', 'Please fill all required fields.');
             return;
         }
 
-        const btn = e.target.closest('.btn');
-        if (btn) {
-            btn.classList.add('loading');
-            btn.disabled = true;
-        }
-
-        setTimeout(() => {
-            if (btn) {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
-            clearDraft();
-            App.showToast('success', 'Lead Created', 'The lead has been saved. You can create another one.');
-            resetForm();
-        }, 1500);
-    }
-
-    function handleCancel() {
-        if (confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-            clearDraft();
-            window.location.href = 'index.html';
-        }
-    }
-
-    function handleViewChangeLog() {
-        App.openModal('changeLogModal');
+        const form = document.getElementById('createLeadForm');
+        submitLead(form, true);
     }
 
     function resetForm() {
         const form = document.getElementById('createLeadForm');
-        if (form) {
-            form.reset();
-            form.querySelectorAll('.form-group.has-error').forEach(g => {
-                g.classList.remove('has-error');
-            });
-            // Reset searchable selects
-            form.querySelectorAll('.searchable-select-option.selected').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            form.querySelectorAll('.trigger-text').forEach(t => {
-                t.textContent = t.dataset.placeholder || 'Select...';
-            });
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!form) return;
+
+        form.reset();
+        window.scrollTo({ top: 0 });
     }
 
-    // ─── Init ───
+    /* ---------- INIT ---------- */
+
     function init() {
         initSections();
-        initSearchableSelects();
-        loadDraft();
+        initWorkingDetailsToggle();
+        initCounselingDefaults();
+        initFeeToggles();
+        initFeeCalculation();
+        initPhoneNumberFilters();
+        loadLookups();
 
-        // Auto-save on input
-        const form = document.getElementById('createLeadForm');
-        if (form) {
-            form.addEventListener('input', triggerAutoSave);
-            form.addEventListener('change', triggerAutoSave);
-        }
-
-        // Button handlers
         const saveBtn = document.getElementById('saveBtn');
         const saveContinueBtn = document.getElementById('saveContinueBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const changeLogBtn = document.getElementById('changeLogBtn');
 
         if (saveBtn) saveBtn.addEventListener('click', handleSave);
         if (saveContinueBtn) saveContinueBtn.addEventListener('click', handleSaveAndContinue);
-        if (cancelBtn) cancelBtn.addEventListener('click', handleCancel);
-        if (changeLogBtn) changeLogBtn.addEventListener('click', handleViewChangeLog);
+
+        // Auto hide message on typing
+        const form = document.getElementById('createLeadForm');
+        if (form) {
+            form.addEventListener('input', () => {
+                const msg = document.getElementById('formMessage');
+                if (msg) msg.style.display = 'none';
+            });
+        }
     }
 
     return { init };
 })();
 
 document.addEventListener('DOMContentLoaded', CreateLead.init);
+console.log('CreateLead JS loaded');

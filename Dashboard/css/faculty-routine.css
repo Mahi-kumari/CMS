@@ -1,0 +1,67 @@
+/* ===== MATCH VIEW LEADS + ENABLE SCROLL ===== */
+
+.leads-table-container {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-light);
+    box-shadow: var(--shadow-card);
+    overflow: visible;
+}
+
+/* ✅ SCROLL ENABLED */
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ✅ TABLE SAME AS VIEW LEADS */
+.data-table {
+    width: 100%;
+    min-width: 1500px;   /* 🔥 THIS CREATES SCROLL */
+    border-collapse: collapse;
+}
+
+/* HEADER */
+.data-table th {
+    background: var(--clr-surface-alt);
+    color: var(--clr-text);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--clr-border-light);
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* CELLS */
+.data-table td {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    color: var(--clr-text-secondary);
+    border-bottom: 1px solid var(--clr-border-light);
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+/* STRIPES */
+.data-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+/* HOVER */
+.data-table tbody tr:hover {
+    background: #f3f6f9;
+}
+
+/* INNER TEXT */
+.data-table td div {
+    line-height: 1.4;
+}
+
+/* ✅ ONLY LAST COLUMN WRAPS */
+.data-table td:last-child {
+    white-space: normal;
+    min-width: 280px;
+}

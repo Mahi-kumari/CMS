@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CRM Login</title>
-    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="login.css?v=4" />
   </head>
 
   <body>
@@ -12,7 +12,7 @@
       <!-- LEFT PANEL -->
       <section class="brand-panel">
         <div class="brand-content">
-          <div class="brand-mark">C.R.M</div>
+          <img class="brand-logo" src="assests/logo.png" alt="ICSS CRM Logo" />
           <div class="brand-subtitle">Customer Relationship Management</div>
           <p class="brand-copy">
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -28,52 +28,28 @@
         <h2>Sign In to C.R.M</h2>
         <p class="form-note">Enter your email and password.</p>
 
-        <form class="register-form">
+        <form id="loginForm" class="register-form" action="login.php" method="post" autocomplete="off" novalidate>
           <label class="field">
             <span>Email</span>
-            <input type="email" placeholder="Enter your email" />
+            <input type="email" name="email" placeholder="Enter your email" required />
+            <small class="error-text" data-error-for="email"></small>
           </label>
 
           <label class="field">
             <span>Password</span>
-            <input type="password" placeholder="Enter your password" />
+            <input type="password" name="password" placeholder="Enter your password" required />
+            <small class="error-text" data-error-for="password"></small>
           </label>
 
-          <a href="#" class="forgot-link" id="openForgot">Forgot password?</a>
+          <a href="forgot_password.php" class="forgot-link">Forgot password?</a>
 
-          <button class="primary-btn">Login</button>
+          <button class="primary-btn" type="submit">Login</button>
 
-          <div class="admin-link-wrapper">
-            <a href="../Admin/login.html" class="admin-link">Login as Admin</a>
-          </div>
         </form>
       </section>
     </div>
 
-    <!-- Forgot Password Modal -->
-    <div class="modal-overlay" id="forgotModal" hidden>
-      <div class="modal-content">
-        <span class="close-modal" id="closeForgot">&times;</span>
-        <h3>Reset Password</h3>
-        <p class="form-note">
-          Enter your email address and we'll send you a link to reset your
-          password.
-        </p>
-        <form class="register-form">
-          <label class="field">
-            <span>Email Address</span>
-            <input type="email" placeholder="name@company.com" required />
-          </label>
-          <button
-            type="submit"
-            class="primary-btn"
-            style="width: 100%; margin-top: 15px"
-          >
-            Send Reset Link
-          </button>
-        </form>
-      </div>
-    </div>
-    <script src="login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="login.js?v=2"></script>
   </body>
 </html>

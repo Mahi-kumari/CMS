@@ -5,11 +5,11 @@
 /* ---------- CSS Custom Properties ---------- */
 :root {
   /* Brand palette — inherited from existing login pages */
-  --clr-primary: #1aa88b;
-  --clr-primary-dark: #157a67;
-  --clr-primary-gradient: linear-gradient(160deg, #2aa88f, #157a67);
-  --clr-primary-light: #e6f7f3;
-  --clr-primary-hover: #0f8b72;
+  --clr-primary: #040074;
+  --clr-primary-dark: #011037;
+  --clr-primary-gradient: linear-gradient(45deg, #011037, #040074, #011037);
+  --clr-primary-light: #e9ebf7;
+  --clr-primary-hover: #020956;
 
   /* Neutrals */
   --clr-bg: #f3f6f9;
@@ -232,12 +232,12 @@ h6 { font-size: 0.875rem; }
 .btn-primary {
   background: var(--clr-primary);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(26, 168, 139, 0.3);
+  box-shadow: 0 2px 8px rgba(4, 0, 116, 0.3);
 }
 
 .btn-primary:hover {
   background: var(--clr-primary-hover);
-  box-shadow: 0 4px 14px rgba(26, 168, 139, 0.4);
+  box-shadow: 0 4px 14px rgba(4, 0, 116, 0.4);
   transform: translateY(-1px);
 }
 
@@ -362,7 +362,7 @@ h6 { font-size: 0.875rem; }
 
 .form-control:focus {
   border-color: var(--clr-primary);
-  box-shadow: 0 0 0 3px rgba(26, 168, 139, 0.12);
+  box-shadow: 0 0 0 3px rgba(4, 0, 116, 0.12);
 }
 
 .form-control::placeholder {
@@ -489,7 +489,7 @@ select.form-control {
 }
 
 .data-table tbody tr:hover {
-  background: rgba(26, 168, 139, 0.03);
+  background: rgba(4, 0, 116, 0.03);
 }
 
 .data-table tbody tr:last-child td {
@@ -813,9 +813,9 @@ select.form-control {
 [data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 6px);
+  top: calc(100% + 6px);
   left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  transform: translateX(-50%) translateY(-4px);
   padding: 5px 10px;
   background: #1e293b;
   color: #fff;
@@ -896,6 +896,6 @@ select.form-control {
 
 /* ---------- Selection ---------- */
 ::selection {
-  background: rgba(26, 168, 139, 0.15);
+  background: rgba(4, 0, 116, 0.15);
   color: var(--clr-primary-dark);
 }

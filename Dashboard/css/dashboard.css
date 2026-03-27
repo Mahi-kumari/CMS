@@ -149,7 +149,7 @@
 /* ---------- Dashboard Tables Grid ---------- */
 .tables-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: var(--space-lg);
 }
 
@@ -159,6 +159,20 @@
     border: 1px solid var(--clr-border-light);
     box-shadow: var(--shadow-card);
     overflow: hidden;
+}
+
+.table-card.wide {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.table-card.wide .table-wrapper {
+    overflow-x: visible;
+}
+
+.table-card.wide .data-table th,
+.table-card.wide .data-table td {
+    white-space: normal;
 }
 
 .table-card .card-header {

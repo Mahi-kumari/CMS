@@ -5,45 +5,78 @@
 const ViewLeads = (() => {
     'use strict';
 
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 5;
     let currentPage = 1;
     let filteredLeads = [];
-
-    // Mock leads data
-    const allLeads = [
-        { id: 1, name: 'Arun Kumar', phone: '+91 98765 43210', email: 'arun@email.com', course: 'Cyber Security', source: 'Google Search', assignedUser: 'Rajesh M.', status: 'New', nextFollowup: '15 Mar 2026', createdDate: '14 Mar 2026' },
-        { id: 2, name: 'Priya Sharma', phone: '+91 87654 32109', email: 'priya@email.com', course: 'SOC Analyst', source: 'Facebook', assignedUser: 'Suman P.', status: 'Contacted', nextFollowup: '16 Mar 2026', createdDate: '14 Mar 2026' },
-        { id: 3, name: 'Rahul Das', phone: '+91 76543 21098', email: 'rahul@email.com', course: 'Advance AWS', source: 'Whatsapp', assignedUser: 'Amit K.', status: 'Qualified', nextFollowup: '15 Mar 2026', createdDate: '13 Mar 2026' },
-        { id: 4, name: 'Sneha Gupta', phone: '+91 65432 10987', email: 'sneha@email.com', course: 'Ethical Hacking', source: 'Website', assignedUser: 'Rajesh M.', status: 'Pending', nextFollowup: '17 Mar 2026', createdDate: '13 Mar 2026' },
-        { id: 5, name: 'Vikram Singh', phone: '+91 54321 09876', email: 'vikram@email.com', course: 'Cyber Security', source: 'Referred from Friend', assignedUser: 'Suman P.', status: 'Admitted', nextFollowup: '-', createdDate: '12 Mar 2026' },
-        { id: 6, name: 'Meera Patel', phone: '+91 98111 22233', email: 'meera@email.com', course: 'SOC Analyst', source: 'Google Search', assignedUser: 'Amit K.', status: 'New', nextFollowup: '15 Mar 2026', createdDate: '12 Mar 2026' },
-        { id: 7, name: 'Sanjay Roy', phone: '+91 97222 33344', email: 'sanjay@email.com', course: 'Advance AWS', source: 'Direct Phone', assignedUser: 'Rajesh M.', status: 'Contacted', nextFollowup: '18 Mar 2026', createdDate: '11 Mar 2026' },
-        { id: 8, name: 'Kavita Nair', phone: '+91 96333 44455', email: 'kavita@email.com', course: 'Cyber Security', source: 'Workshop', assignedUser: 'Suman P.', status: 'Qualified', nextFollowup: '16 Mar 2026', createdDate: '11 Mar 2026' },
-        { id: 9, name: 'Deepak Jha', phone: '+91 95444 55566', email: 'deepak@email.com', course: 'Ethical Hacking', source: 'Facebook', assignedUser: 'Amit K.', status: 'Pending', nextFollowup: '19 Mar 2026', createdDate: '10 Mar 2026' },
-        { id: 10, name: 'Anita Mishra', phone: '+91 94555 66677', email: 'anita@email.com', course: 'SOC Analyst', source: 'Whatsapp', assignedUser: 'Rajesh M.', status: 'New', nextFollowup: '15 Mar 2026', createdDate: '10 Mar 2026' },
-        { id: 11, name: 'Rohit Verma', phone: '+91 93666 77788', email: 'rohit@email.com', course: 'Advance AWS', source: 'Google Search', assignedUser: 'Suman P.', status: 'Contacted', nextFollowup: '20 Mar 2026', createdDate: '09 Mar 2026' },
-        { id: 12, name: 'Pooja Sinha', phone: '+91 92777 88899', email: 'pooja@email.com', course: 'Cyber Security', source: 'Website', assignedUser: 'Amit K.', status: 'Admitted', nextFollowup: '-', createdDate: '09 Mar 2026' },
-        { id: 13, name: 'Nikhil Sen', phone: '+91 91888 99900', email: 'nikhil@email.com', course: 'SOC Analyst', source: 'Direct Email', assignedUser: 'Rajesh M.', status: 'New', nextFollowup: '16 Mar 2026', createdDate: '08 Mar 2026' },
-        { id: 14, name: 'Swati Ghosh', phone: '+91 90999 00011', email: 'swati@email.com', course: 'Ethical Hacking', source: 'Facebook', assignedUser: 'Suman P.', status: 'Qualified', nextFollowup: '17 Mar 2026', createdDate: '08 Mar 2026' },
-        { id: 15, name: 'Arjun Chatterjee', phone: '+91 89100 11122', email: 'arjun@email.com', course: 'Advance AWS', source: 'Whatsapp Ads', assignedUser: 'Amit K.', status: 'Pending', nextFollowup: '18 Mar 2026', createdDate: '07 Mar 2026' }
-    ];
+    let allLeads = [];
+    const roleParam = window.CRM_ROLE === 'admin' ? 'role=admin' : '';
+    const crmBase = window.CRM_BASE || '/CRM';
+    const apiBase = window.CRM_ROLE === 'admin' ? `${crmBase}/Dashboard/` : '';
+    const withRole = (url) => {
+        const baseUrl = url.startsWith('api/') ? `${apiBase}${url}` : url;
+        return roleParam ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${roleParam}` : baseUrl;
+    };
 
     const statusStyles = {
-        'New': 'badge-info badge-dot',
-        'Contacted': 'badge-warning badge-dot',
-        'Qualified': 'badge-success badge-dot',
-        'Pending': 'badge-neutral badge-dot',
-        'Admitted': 'badge-primary badge-dot',
-        'Rejected': 'badge-danger badge-dot'
+        'Positive': 'badge-success badge-dot',
+        'Considering': 'badge-warning badge-dot',
+        'Negative': 'badge-danger badge-dot',
+        'May Enroll Later': 'badge-neutral badge-dot'
     };
+    const isAdmin = window.CRM_ROLE === 'admin';
+    const selectedIds = new Set();
+
+    function formatDate(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function normalizeLead(raw) {
+        return {
+            id: raw.id,
+            name: raw.name || '-',
+            phone: raw.phone || '-',
+            email: raw.email || '-',
+            course: raw.course || '-',
+            source: raw.source || '-',
+            assignedUser: raw.assignedUser || '-',
+            status: raw.status || 'Considering',
+            nextFollowup: formatDate(raw.nextFollowup),
+            nextFollowupRaw: raw.nextFollowup || '',
+            createdDate: formatDate(raw.createdDate),
+            createdDateRaw: raw.createdDate || ''
+        };
+    }
+
+    async function loadLeads() {
+        try {
+            let res = await fetch(withRole('api/get_leads.php'), { cache: 'no-store' });
+            if (!res.ok) {
+                const fallback = withRole(window.location.origin + `${crmBase}/Dashboard/api/get_leads.php`);
+                res = await fetch(fallback, { cache: 'no-store' });
+            }
+            if (!res.ok) throw new Error('Failed to load leads');
+
+            const data = await res.json();
+            const rows = Array.isArray(data?.leads) ? data.leads : [];
+            allLeads = rows.map(normalizeLead);
+            applyFilters();
+        } catch (e) {
+            allLeads = [];
+            filteredLeads = [];
+            renderTable();
+            renderPagination();
+            updateLeadsCount();
+        }
+    }
 
     // ─── Filter & Search ───
     function applyFilters() {
         const searchTerm = (document.getElementById('leadsSearch')?.value || '').toLowerCase();
         const courseFilter = document.getElementById('filterCourse')?.value || '';
         const sourceFilter = document.getElementById('filterSource')?.value || '';
-        const statusFilter = document.getElementById('filterStatus')?.value || '';
-
         filteredLeads = allLeads.filter(lead => {
             const matchSearch = !searchTerm ||
                 lead.name.toLowerCase().includes(searchTerm) ||
@@ -51,15 +84,50 @@ const ViewLeads = (() => {
                 lead.email.toLowerCase().includes(searchTerm);
             const matchCourse = !courseFilter || lead.course === courseFilter;
             const matchSource = !sourceFilter || lead.source === sourceFilter;
-            const matchStatus = !statusFilter || lead.status === statusFilter;
-
-            return matchSearch && matchCourse && matchSource && matchStatus;
+            return matchSearch && matchCourse && matchSource;
         });
 
         currentPage = 1;
         renderTable();
         renderPagination();
         updateLeadsCount();
+    }
+
+    async function loadLookups() {
+        try {
+            let res = await fetch(withRole('api/lookups.php'), { cache: 'no-store' });
+            if (!res.ok) {
+                const fallback = withRole(window.location.origin + `${crmBase}/Dashboard/api/lookups.php`);
+                res = await fetch(fallback, { cache: 'no-store' });
+            }
+            if (!res.ok) return;
+            const data = await res.json();
+            populateSelect('filterCourse', data.courses, 'All Courses');
+            populateSelect('filterSource', data.sources, 'All Sources');
+        } catch (e) {
+            // ignore lookup failures
+        }
+    }
+
+    function populateSelect(id, items, placeholder) {
+        const select = document.getElementById(id);
+        if (!select) return;
+        select.innerHTML = '';
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = placeholder;
+        select.appendChild(defaultOpt);
+
+        const list = Array.isArray(items) ? [...items] : [];
+        if (id === 'filterSource' && !list.includes('Other')) {
+            list.push('Other');
+        }
+        list.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item;
+            opt.textContent = item;
+            select.appendChild(opt);
+        });
     }
 
     // ─── Render Table ───
@@ -70,11 +138,12 @@ const ViewLeads = (() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
         const pageLeads = filteredLeads.slice(start, end);
+        const colCount = isAdmin ? 11 : 10;
 
         if (pageLeads.length === 0) {
             tbody.innerHTML = `
         <tr>
-          <td colspan="10">
+          <td colspan="${colCount}">
             <div class="empty-state">
               <div class="empty-state-icon">📋</div>
               <h4>No leads found</h4>
@@ -89,9 +158,9 @@ const ViewLeads = (() => {
 
         tbody.innerHTML = pageLeads.map(lead => `
       <tr data-lead-id="${lead.id}">
+        ${isAdmin ? `<td class="col-select"><input type="checkbox" class="lead-select" value="${lead.id}" ${selectedIds.has(lead.id) ? 'checked' : ''}></td>` : ''}
         <td>
           <div class="user-cell">
-            <div class="user-cell-avatar">${lead.name.split(' ').map(n => n[0]).join('')}</div>
             <span>${lead.name}</span>
           </div>
         </td>
@@ -106,12 +175,52 @@ const ViewLeads = (() => {
         <td>
           <div class="row-actions">
             <button class="row-action-btn view" data-tooltip="View" onclick="ViewLeads.viewLead(${lead.id})">👁</button>
-            <button class="row-action-btn edit" data-tooltip="Edit" onclick="ViewLeads.editLead(${lead.id})">✏️</button>
-            <button class="row-action-btn delete" data-tooltip="Delete" onclick="ViewLeads.deleteLead(${lead.id})">🗑</button>
-          </div>
+            </div>
         </td>
       </tr>
     `).join('');
+
+        if (isAdmin) {
+            bindRowSelection();
+        }
+    }
+
+    function bindRowSelection() {
+        const selectAll = document.getElementById('selectAllLeads');
+        const rowChecks = Array.from(document.querySelectorAll('.lead-select'));
+        rowChecks.forEach(chk => {
+            chk.addEventListener('change', () => {
+                const id = parseInt(chk.value, 10);
+                if (Number.isFinite(id)) {
+                    if (chk.checked) selectedIds.add(id);
+                    else selectedIds.delete(id);
+                }
+                syncSelectAll();
+            });
+        });
+
+        if (selectAll) {
+            selectAll.addEventListener('change', () => {
+                if (selectAll.checked) {
+                    filteredLeads.forEach(l => selectedIds.add(l.id));
+                } else {
+                    selectedIds.clear();
+                }
+                renderTable();
+            });
+            syncSelectAll();
+        }
+    }
+
+    function syncSelectAll() {
+        const selectAll = document.getElementById('selectAllLeads');
+        if (!selectAll) return;
+        if (filteredLeads.length === 0) {
+            selectAll.checked = false;
+            return;
+        }
+        const allSelected = filteredLeads.every(l => selectedIds.has(l.id));
+        selectAll.checked = allSelected;
     }
 
     // ─── Pagination ───
@@ -164,6 +273,57 @@ const ViewLeads = (() => {
         countEl.innerHTML = `Showing <strong>${filteredLeads.length > 0 ? start : 0}-${end}</strong> of <strong>${filteredLeads.length}</strong> leads`;
     }
 
+    async function applyBulkUpdate() {
+        const selected = Array.from(document.querySelectorAll('.lead-select:checked'))
+            .map(el => parseInt(el.value, 10))
+            .filter(v => Number.isFinite(v));
+        if (selected.length === 0) {
+            App.showToast('warning', 'Select Leads', 'Please select at least one lead.');
+            return;
+        }
+        const status = document.getElementById('bulkStatus')?.value || '';
+        const counselor = document.getElementById('bulkCounselor')?.value.trim() || '';
+        const followup = document.getElementById('bulkFollowup')?.value || '';
+        if (!status && !counselor && !followup) {
+            App.showToast('warning', 'No Changes', 'Set status, counselor, or follow-up date.');
+            return;
+        }
+        const payload = new URLSearchParams({
+            lead_ids: selected.join(','),
+            counseling_status: status,
+            counselor_name: counselor,
+            follow_up_date: followup
+        });
+        try {
+            const res = await fetch(withRole('api/admin_bulk_update_leads.php'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: payload
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || data.success === false) {
+                App.showToast('error', 'Update Failed', data.message || 'Could not update leads.');
+                return;
+            }
+            // update local cache
+            allLeads.forEach(l => {
+                if (selected.includes(l.id)) {
+                    if (status) l.status = status;
+                    if (counselor) l.assignedUser = counselor;
+                    if (followup) {
+                        l.nextFollowupRaw = followup;
+                        l.nextFollowup = formatDate(followup);
+                    }
+                }
+            });
+            App.showToast('success', 'Bulk Updated', data.message || 'Leads updated.');
+            renderTable();
+            updateLeadsCount();
+        } catch (e) {
+            App.showToast('error', 'Network Error', 'Please try again.');
+        }
+    }
+
     // ─── Actions ───
     function viewLead(id) {
         const lead = allLeads.find(l => l.id === id);
@@ -171,10 +331,22 @@ const ViewLeads = (() => {
 
         const detailGrid = document.getElementById('leadDetailGrid');
         if (detailGrid) {
-            detailGrid.innerHTML = Object.entries(lead).filter(([k]) => k !== 'id').map(([key, value]) => `
-        <div class="detail-item">
-          <div class="detail-label">${key.replace(/([A-Z])/g, ' $1').trim()}</div>
-          <div class="detail-value">${value}</div>
+            const fields = [
+                { key: 'name', label: 'Name', editable: true, field: 'full_name' },
+                { key: 'phone', label: 'Phone', editable: true, field: 'phone_number' },
+                { key: 'email', label: 'Email', editable: true, field: 'email_address' },
+                { key: 'course', label: 'Course', editable: true, field: 'course_applied' },
+                { key: 'source', label: 'Source', editable: true, field: 'source_of_lead' },
+                { key: 'assignedUser', label: 'Assigned User', editable: true, field: 'counselor_name' },
+                { key: 'status', label: 'Status', editable: true, field: 'counseling_status' },
+                { key: 'nextFollowup', label: 'Next Follow-up', editable: true, field: 'follow_up_date' },
+                { key: 'createdDate', label: 'Created Date', editable: false }
+            ];
+
+            detailGrid.innerHTML = fields.map(field => `
+        <div class="detail-item" data-field="${field.field || ''}" data-editable="${field.editable ? '1' : '0'}">
+          <div class="detail-label">${field.label}</div>
+          <div class="detail-value">${lead[field.key] || '-'}</div>
         </div>
       `).join('');
         }
@@ -182,15 +354,111 @@ const ViewLeads = (() => {
         const modalTitle = document.querySelector('#viewLeadModal .modal-header h3');
         if (modalTitle) modalTitle.textContent = `Lead: ${lead.name}`;
 
+        const editBtn = document.getElementById('editLeadBtn');
+        if (editBtn) {
+            editBtn.onclick = () => toggleInlineEdit(detailGrid, lead);
+        }
+
         App.openModal('viewLeadModal');
     }
 
     function editLead(id) {
-        App.showToast('info', 'Edit Lead', `Redirecting to edit lead #${id}...`);
-        // In a real app, redirect to create-lead.html with lead data
-        setTimeout(() => {
-            window.location.href = `create-lead.html?edit=${id}`;
-        }, 800);
+        App.showToast('info', 'Edit Lead', `Edit mode is available in the modal.`);
+    }
+
+    async function toggleInlineEdit(detailGrid, lead) {
+        if (!detailGrid) return;
+        const isEditing = detailGrid.dataset.editing === 'true';
+        if (!isEditing) {
+            detailGrid.dataset.editing = 'true';
+            detailGrid.querySelectorAll('.detail-item').forEach(item => {
+                const editable = item.dataset.editable === '1';
+                if (!editable) return;
+                const label = item.querySelector('.detail-label')?.textContent?.trim() || '';
+                const field = item.dataset.field || '';
+                const valueEl = item.querySelector('.detail-value');
+                if (!valueEl) return;
+                const currentValue = valueEl.textContent.trim();
+                const input = document.createElement('input');
+                if (field === 'follow_up_date') {
+                    input.type = 'date';
+                    input.value = lead.nextFollowupRaw ? String(lead.nextFollowupRaw).slice(0, 10) : '';
+                } else {
+                    input.type = 'text';
+                    input.value = currentValue === '-' ? '' : currentValue;
+                }
+                input.className = 'form-control';
+                input.dataset.fieldLabel = label;
+                input.dataset.fieldKey = field;
+                valueEl.replaceWith(input);
+            });
+            const editBtn = document.getElementById('editLeadBtn');
+            if (editBtn) editBtn.textContent = 'Save';
+        } else {
+            const updated = {};
+            detailGrid.querySelectorAll('input.form-control').forEach(input => {
+                const label = input.dataset.fieldLabel || '';
+                const key = input.dataset.fieldKey || '';
+                const value = input.value.trim() || '-';
+                if (key) updated[key] = value;
+            });
+
+            const res = await saveLeadEdits(lead.id, updated);
+            if (!res) {
+                App.showToast('error', 'Update Failed', 'Could not save lead. Please try again.');
+                return;
+            }
+
+            // update local lead object
+            if (updated.full_name !== undefined) lead.name = updated.full_name || '-';
+            if (updated.phone_number !== undefined) lead.phone = updated.phone_number || '-';
+            if (updated.email_address !== undefined) lead.email = updated.email_address || '-';
+            if (updated.course_applied !== undefined) lead.course = updated.course_applied || '-';
+            if (updated.source_of_lead !== undefined) lead.source = updated.source_of_lead || '-';
+            if (updated.counselor_name !== undefined) lead.assignedUser = updated.counselor_name || '-';
+            if (updated.counseling_status !== undefined) lead.status = updated.counseling_status || '-';
+            if (updated.follow_up_date !== undefined) {
+                lead.nextFollowupRaw = updated.follow_up_date === '-' ? '' : updated.follow_up_date;
+                lead.nextFollowup = formatDate(lead.nextFollowupRaw);
+            }
+
+            detailGrid.dataset.editing = 'false';
+            detailGrid.querySelectorAll('.detail-item').forEach(item => {
+                const valueEl = item.querySelector('input.form-control');
+                if (!valueEl) return;
+                const key = valueEl.dataset.fieldKey || '';
+                let displayValue = valueEl.value.trim() || '-';
+                if (key === 'follow_up_date') {
+                    displayValue = formatDate(valueEl.value.trim());
+                }
+                const div = document.createElement('div');
+                div.className = 'detail-value';
+                div.textContent = displayValue || '-';
+                valueEl.replaceWith(div);
+            });
+
+            const editBtn = document.getElementById('editLeadBtn');
+            if (editBtn) editBtn.textContent = 'Edit Lead';
+
+            renderTable();
+            renderPagination();
+            updateLeadsCount();
+            App.showToast('success', 'Lead Updated', 'Changes saved to the database.');
+        }
+    }
+
+    async function saveLeadEdits(id, updates) {
+        try {
+            const res = await fetch(withRole('api/update_lead.php'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, updates })
+            });
+            const data = await res.json().catch(() => ({}));
+            return res.ok && data.success;
+        } catch (e) {
+            return false;
+        }
     }
 
     function deleteLead(id) {
@@ -234,10 +502,8 @@ const ViewLeads = (() => {
 
     // ─── Init ───
     function init() {
-        filteredLeads = [...allLeads];
-        renderTable();
-        renderPagination();
-        updateLeadsCount();
+        loadLookups();
+        loadLeads();
 
         // Event listeners
         const searchInput = document.getElementById('leadsSearch');
@@ -251,14 +517,45 @@ const ViewLeads = (() => {
 
         const filterCourse = document.getElementById('filterCourse');
         const filterSource = document.getElementById('filterSource');
-        const filterStatus = document.getElementById('filterStatus');
-
         if (filterCourse) filterCourse.addEventListener('change', applyFilters);
         if (filterSource) filterSource.addEventListener('change', applyFilters);
-        if (filterStatus) filterStatus.addEventListener('change', applyFilters);
+        // Sync global search (navbar) with leads search
+        const globalSearch = document.getElementById('globalSearch');
+        if (globalSearch) {
+            globalSearch.addEventListener('input', () => {
+                const query = globalSearch.value;
+                if (searchInput) {
+                    searchInput.value = query;
+                }
+                applyFilters();
+            });
+        }
+
+        const bulkApplyBtn = document.getElementById('bulkApplyBtn');
+        const bulkClearBtn = document.getElementById('bulkClearBtn');
+        if (bulkApplyBtn) bulkApplyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            applyBulkUpdate();
+        });
+        if (bulkClearBtn) bulkClearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const bs = document.getElementById('bulkStatus');
+            const bc = document.getElementById('bulkCounselor');
+            const bf = document.getElementById('bulkFollowup');
+            if (bs) bs.value = '';
+            if (bc) bc.value = '';
+            if (bf) bf.value = '';
+            selectedIds.clear();
+            renderTable();
+        });
     }
 
-    return { init, goToPage, viewLead, editLead, deleteLead, clearFilters };
+    return { init, goToPage, viewLead, editLead, deleteLead, clearFilters, getSelectedIds: () => Array.from(selectedIds) };
 })();
 
 document.addEventListener('DOMContentLoaded', ViewLeads.init);
+
+
+
+
+
